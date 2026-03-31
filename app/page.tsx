@@ -59,6 +59,21 @@ const RightArrowIcon = () => (
   </svg>
 );
 
+const HomeIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+    <polyline points="9 22 9 12 15 12 15 22"></polyline>
+  </svg>
+);
+
+const SettingsIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.1a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path>
+    <circle cx="12" cy="12" r="3"></circle>
+  </svg>
+);
+
+
 const CloseIcon = () => (
   <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
       <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -135,27 +150,47 @@ const ImageWithPlaceholder = ({ src, alt, className, innerClassName = "w-full h-
 // DATA & TYPES
 // ==========================================
 const INITIAL_CATEGORIES = [
+  "Autoart",
   "AutoWorld",
   "Bburago",
+  "BM Creations",
+  "Era Car",
   "GreenLight",
+  "GT Spirit",
+  "Hobby Japan",
   "Hot Wheels - Mainline",
   "Hot Wheels - Premium",
   "Hot Wheels - RLC",
   "Hot Wheels - Team Transport",
+  "Ignition Model",
   "Inno64",
   "Johnny Lightning",
   "Kaido House",
+  "Kyosho",
+  "LCD Models",
   "Maisto",
   "Majorette",
+  "Mark43",
   "Matchbox - Basic",
   "Matchbox - Collectors",
   "Matchbox - Moving Parts",
   "Mini GT",
+  "Motorhelix",
+  "Norev",
+  "Ottomobile",
+  "Para64",
+  "Peako64",
+  "Pop Race",
+  "Schuco",
+  "Solido",
+  "Sparky",
   "Tarmac Works",
   "Tomica - Basic",
   "Tomica - Limited Vintage",
-  "Tomica - Premium"
+  "Tomica - Premium",
+  "X-Cartoys"
 ];
+
 
 type DiecastModel = {
   id: number;
@@ -495,8 +530,11 @@ export default function DiecastDashboard() {
         if (data.collection && Array.isArray(data.collection)) {
           setCollection(data.collection);
         }
+        
+        // Merge Logic: Combine cloud categories with the new expanded INITIAL_CATEGORIES
         if (data.categories && Array.isArray(data.categories)) {
-          setCategories(data.categories);
+          const combined = Array.from(new Set([...data.categories, ...INITIAL_CATEGORIES])).sort();
+          setCategories(combined);
         }
       } catch (e) {
         console.error("Persistence Hydration Failed:", e);
@@ -506,6 +544,7 @@ export default function DiecastDashboard() {
     }
     loadData();
   }, []);
+
 
   // Vercel Blob Persistence: Save (Debounced)
   useEffect(() => {
@@ -692,23 +731,29 @@ export default function DiecastDashboard() {
                   </div>
               </div>
  
-              <div className="flex items-center gap-2 sm:gap-3">
-                 <button 
-                    onClick={() => setViewState('intro')}
-                    className="flex-shrink-0 flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-xl sm:rounded-2xl bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white hover:bg-zinc-800 transition-all"
-                    title="Return to Home"
-                 >
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
-                 </button>
-                 <button 
-                    onClick={() => setViewState('dashboard')}
-                    className="flex-grow sm:flex-grow-0 flex items-center justify-center gap-2 h-10 sm:h-12 px-4 sm:px-6 bg-red-600 hover:bg-red-500 rounded-xl sm:rounded-2xl text-[10px] sm:text-xs font-black uppercase tracking-widest transition-all shadow-[0_4px_15px_rgba(239,68,68,0.3)] text-white"
-                 >
-                    <span className="hidden sm:inline">Enter Paddock</span>
-                    <span className="inline sm:hidden">Paddock</span>
-                 </button>
+                  <div className="flex items-center gap-2 sm:gap-3">
+                     <button 
+                        onClick={() => setViewState('dashboard')}
+                        className="flex items-center gap-2 px-4 h-10 sm:h-12 bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white rounded-xl sm:rounded-2xl transition-all font-black text-[10px] uppercase tracking-widest hidden sm:flex"
+                     >
+                        Inventory
+                     </button>
+                     <button 
+                        onClick={() => setViewState('intro')}
+                        className="flex-shrink-0 flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-xl sm:rounded-2xl bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white hover:bg-zinc-800 transition-all font-black"
+                        title="Return to Home"
+                     >
+                        <HomeIcon />
+                     </button>
+                     <button 
+                        onClick={() => setViewState('dashboard')}
+                        className="flex-grow sm:flex-grow-0 flex items-center justify-center gap-2 h-10 sm:h-12 px-4 sm:px-6 bg-red-600 hover:bg-red-500 rounded-xl sm:rounded-2xl text-[10px] sm:text-xs font-black uppercase tracking-widest transition-all shadow-[0_4px_15px_rgba(239,68,68,0.3)] text-white"
+                     >
+                        <span className="hidden sm:inline">Enter Paddock</span>
+                        <span className="inline sm:hidden">Paddock</span>
+                     </button>
+                  </div>
 
-              </div>
            </header>
 
 
@@ -1077,25 +1122,36 @@ export default function DiecastDashboard() {
           </div>
 
 
-          
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 md:gap-4">
              <button 
                onClick={() => setViewState('profile')}
-               className="flex items-center justify-center h-11 w-11 rounded-2xl bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white hover:bg-zinc-800 transition-all hover:scale-105"
-               title="Profile Stats"
+               className="flex items-center justify-center gap-2.5 h-11 md:h-12 px-3 sm:px-5 rounded-2xl bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-red-500 hover:border-red-950 transition-all font-black shadow-xl group"
+               title="Registry Configuration"
              >
-                <TireIcon />
+               <SettingsIcon />
+               <span className="hidden lg:inline text-[9px] uppercase tracking-[0.2em] mt-0.5">Registry</span>
              </button>
 
              <button 
                onClick={() => setIsAdding(!isAdding)}
-               className="flex items-center justify-center gap-2 rounded-2xl px-5 h-11 text-[11px] font-black uppercase tracking-widest text-white bg-red-600 hover:bg-red-500 hover:shadow-[0_4px_20px_rgba(239,68,68,0.4)] transition-all"
+               className="flex items-center justify-center gap-2 rounded-2xl px-4 sm:px-6 h-11 md:h-12 text-[10px] md:text-[11px] font-black uppercase tracking-widest text-white bg-red-600 hover:bg-red-500 hover:shadow-[0_4px_20px_rgba(239,68,68,0.4)] transition-all shadow-xl"
              >
                {isAdding ? <CloseIcon /> : <PlusIcon />}
-               <span>{isAdding ? "CANCEL" : "ADD NEW"}</span>
+               <span className="hidden sm:inline">{isAdding ? "CANCEL" : "ADD NEW"}</span>
+               <span className="inline sm:hidden">{isAdding ? "" : "ADD"}</span>
              </button>
+
+             <div 
+               onClick={() => setViewState('profile')}
+               className="hidden sm:flex w-11 h-11 md:w-12 md:h-12 bg-zinc-900 border border-zinc-800 rounded-2xl items-center justify-center text-zinc-400 hover:text-white transition-all cursor-pointer group hover:border-red-700 shadow-xl"
+             >
+                <div className="w-5 h-5 transition-transform group-hover:scale-110">
+                  <UserIcon />
+                </div>
+             </div>
           </div>
         </header>
+
 
         {/* Secondary Control Sub-header (Filters & Sorting) */}
         {!isAdding && (
