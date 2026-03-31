@@ -681,7 +681,8 @@ export default function DiecastDashboard() {
       <div className="relative h-[100dvh] w-full bg-[#060202] overflow-hidden flex items-center justify-center font-sans tracking-tight p-4">
         <AmbientBackground isIntro={true} />
 
-        <div className="relative z-10 flex flex-col md:flex-row items-center justify-center max-w-[1700px] mx-auto w-full gap-12 md:gap-40">
+        <div className="relative z-10 flex flex-col items-center justify-center max-w-4xl mx-auto w-full gap-16 py-20 text-center animate-in fade-in zoom-in-95 duration-1000">
+
 
 
 
@@ -696,9 +697,10 @@ export default function DiecastDashboard() {
                Diecast<br/><span className="text-red-600">Paddock</span>
              </h1>
 
-             <p className="text-zinc-500 font-sans text-sm sm:text-lg md:text-xl leading-relaxed mb-8 sm:mb-10 max-w-md font-medium drop-shadow-md mx-auto">
+             <p className="text-zinc-500 font-sans text-sm sm:text-lg md:text-xl leading-relaxed mb-10 max-w-lg font-medium drop-shadow-md mx-auto">
                 A definitive digital catalogue to maintain your precision scaled garage. Built for genuine diecast passion.
              </p>
+
 
              <button 
                onClick={() => setViewState('dashboard')}
@@ -711,7 +713,8 @@ export default function DiecastDashboard() {
 
 
           {/* Right Logo Block - Ultra Minimalist Design */}
-          <div className="w-full flex justify-center relative h-[250px] md:h-[400px] z-10">
+          <div className="w-full flex justify-center relative h-[250px] md:h-[300px] z-10 mt-4">
+
 
             <div className="absolute inset-0 bg-gradient-to-tr from-red-600 to-orange-500 rounded-full blur-[80px] opacity-20 z-0 scale-[0.6] mix-blend-screen" />
             
