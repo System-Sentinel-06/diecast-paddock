@@ -104,11 +104,12 @@ const ImageWithPlaceholder = ({ src, alt, className, innerClassName = "w-full h-
         </div>
       )}
 
-      {hasError ? (
-        <div className="absolute inset-0 flex items-center justify-center bg-zinc-950 text-zinc-800">
+      {(hasError || !src) ? (
+        <div className="absolute inset-0 flex items-center justify-center bg-zinc-950 text-zinc-900/50">
            <CarIcon />
         </div>
       ) : (
+
         <img 
           key={src} // Core fix: forces refresh when user toggles gallery images
           src={src} 
