@@ -90,26 +90,37 @@ const SearchIcon = () => (
 
 const ImageWithPlaceholder = ({ src, alt, className, innerClassName = "w-full h-full object-cover" }: { src: string, alt: string, className?: string, innerClassName?: string }) => {
   const [isLoaded, setIsLoaded] = useState(false);
+  const [hasError, setHasError] = useState(false);
   
   return (
-    <div className={`relative overflow-hidden bg-zinc-900 ${className}`}>
-      {/* Skeleton / Pulse Layer */}
-      <div className={`absolute inset-0 bg-zinc-900 transition-opacity duration-500 ${isLoaded ? 'opacity-0' : 'opacity-100'}`}>
-         <div className="w-full h-full bg-gradient-to-tr from-zinc-900 via-zinc-800 to-zinc-900 animate-pulse" />
-         <div className="absolute inset-0 flex items-center justify-center">
-            <div className="w-6 h-6 border-2 border-red-900/20 border-t-red-600 rounded-full animate-spin" />
-         </div>
-      </div>
+    <div className={`relative overflow-hidden bg-zinc-950 ${className}`}>
+      {/* Skeleton / Pulse Layer - only show if not loaded and no error */}
+      {(!isLoaded && !hasError) && (
+        <div className="absolute inset-0 bg-zinc-900">
+           <div className="w-full h-full bg-gradient-to-tr from-zinc-950 via-zinc-900 to-zinc-950 animate-pulse" />
+           <div className="absolute inset-0 flex items-center justify-center">
+              <div className="w-6 h-6 border-2 border-red-950 border-t-red-600 rounded-full animate-spin" />
+           </div>
+        </div>
+      )}
 
-      <img 
-        src={src} 
-        alt={alt}
-        onLoad={() => setIsLoaded(true)}
-        className={`${innerClassName} transition-all duration-1000 ease-out ${isLoaded ? 'opacity-100 scale-100 blur-0' : 'opacity-0 scale-110 blur-3xl'}`}
-      />
+      {hasError ? (
+        <div className="absolute inset-0 flex items-center justify-center bg-zinc-900 text-zinc-700">
+           <CarIcon />
+        </div>
+      ) : (
+        <img 
+          src={src} 
+          alt={alt}
+          onLoad={() => setIsLoaded(true)}
+          onError={() => setHasError(true)}
+          className={`${innerClassName} transition-all duration-1000 ease-out ${isLoaded ? 'opacity-100 scale-100 blur-0' : 'opacity-0 scale-110 blur-3xl'}`}
+        />
+      )}
     </div>
   );
 };
+
 
 
 
@@ -637,9 +648,10 @@ export default function DiecastDashboard() {
                     onClick={() => setViewState('dashboard')}
                     className="flex-grow sm:flex-grow-0 flex items-center justify-center gap-2 h-10 sm:h-12 px-4 sm:px-6 bg-red-600 hover:bg-red-500 rounded-xl sm:rounded-2xl text-[10px] sm:text-xs font-black uppercase tracking-widest transition-all shadow-[0_4px_15px_rgba(239,68,68,0.3)] text-white"
                  >
-                    <span className="sm:inline">Enter Paddock</span>
+                    <span className="hidden sm:inline">Enter Paddock</span>
                     <span className="inline sm:hidden">Paddock</span>
                  </button>
+
               </div>
            </header>
 
