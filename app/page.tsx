@@ -105,18 +105,23 @@ const ImageWithPlaceholder = ({ src, alt, className, innerClassName = "w-full h-
       )}
 
       {hasError ? (
-        <div className="absolute inset-0 flex items-center justify-center bg-zinc-900 text-zinc-700">
+        <div className="absolute inset-0 flex items-center justify-center bg-zinc-950 text-zinc-800">
            <CarIcon />
         </div>
       ) : (
         <img 
+          key={src} // Core fix: forces refresh when user toggles gallery images
           src={src} 
           alt={alt}
-          onLoad={() => setIsLoaded(true)}
+          onLoad={() => {
+             // Slight delay to ensure the transition feels intentional
+             setTimeout(() => setIsLoaded(true), 150);
+          }}
           onError={() => setHasError(true)}
-          className={`${innerClassName} transition-all duration-1000 ease-out ${isLoaded ? 'opacity-100 scale-100 blur-0' : 'opacity-0 scale-110 blur-3xl'}`}
+          className={`${innerClassName} transition-all duration-1000 ease-in-out ${isLoaded ? 'opacity-100 scale-100 blur-0' : 'opacity-0 scale-110 blur-3xl'}`}
         />
       )}
+
     </div>
   );
 };
@@ -318,42 +323,46 @@ const compressImage = async (file: File): Promise<Blob> => {
       img.src = event.target?.result as string;
       img.onload = () => {
         const canvas = document.createElement('canvas');
-        const MAX_WIDTH = 1200;
-        const MAX_HEIGHT = 1200;
+        const MAX_DIM = 1200; // Optimal resolution for high-detail diecast shots
         let width = img.width;
         let height = img.height;
 
         if (width > height) {
-          if (width > MAX_WIDTH) {
-            height *= MAX_WIDTH / width;
-            width = MAX_WIDTH;
+          if (width > MAX_DIM) {
+            height *= MAX_DIM / width;
+            width = MAX_DIM;
           }
         } else {
-          if (height > MAX_HEIGHT) {
-            width *= MAX_HEIGHT / height;
-            height = MAX_HEIGHT;
+          if (height > MAX_DIM) {
+            width *= MAX_DIM / height;
+            height = MAX_DIM;
           }
         }
 
         canvas.width = width;
         canvas.height = height;
-        const ctx = canvas.getContext('2d');
-        ctx?.drawImage(img, 0, 0, width, height);
+        const ctx = canvas.getContext('2d', { alpha: false });
+        if (ctx) {
+          ctx.fillStyle = "#000000"; // Solid black backdrop for transparency
+          ctx.fillRect(0, 0, width, height);
+          ctx.drawImage(img, 0, 0, width, height);
+        }
         
         canvas.toBlob(
           (blob) => {
             if (blob) resolve(blob);
-            else reject(new Error('Canvas toBlob failed'));
+            else reject(new Error('Buffer Serialization Error'));
           },
           'image/jpeg',
-          0.8 // target 80% quality for excellent balance
+          0.85 // Slightly higher quality for collection details
         );
       };
-      img.onerror = reject;
+      img.onerror = () => reject(new Error('Image Process Fault'));
     };
-    reader.onerror = reject;
+    reader.onerror = () => reject(new Error('Stream Read Fault'));
   });
 };
+
 
 
 // ==========================================
@@ -805,18 +814,41 @@ export default function DiecastDashboard() {
 
             {/* MOBILE ONLY VIEW */}
             <div className="flex md:hidden flex-col h-full overflow-hidden">
-               {/* Main Image (Mobile) */}
-               <div className="relative h-[45vh] bg-black overflow-hidden flex-shrink-0">
+               {/* Main Image (Mobile) with Navigation */}
+               <div className="relative h-[48vh] bg-black overflow-hidden flex-shrink-0 group/img">
                   <ImageWithPlaceholder 
                     src={expandedItem.imageUrls[activeImageIndex]} 
                     alt={expandedItem.title}
                     className="w-full h-full"
+                    innerClassName="w-full h-full object-contain" // Contain for better full-car view
                   />
-                  <div className="absolute top-4 left-4 z-10 px-3 py-1.5 bg-black/60 backdrop-blur-md rounded-xl border border-white/10 text-[10px] font-black text-white uppercase tracking-widest">
-                     IMG {activeImageIndex + 1}/{expandedItem.imageUrls.length}
+                  
+                  {/* Overlay Controls (Mobile) */}
+                  <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/60 z-10 pointer-events-none" />
+                  
+                  <div className="absolute top-4 left-4 z-20 px-3 py-1.5 bg-black/80 backdrop-blur-md rounded-xl border border-white/10 text-[10px] font-black text-white uppercase tracking-widest shadow-2xl">
+                     FRAME {activeImageIndex + 1} / {expandedItem.imageUrls.length}
                   </div>
-                  {/* Floating Brand Logo */}
-                  <div className="absolute bottom-4 right-4 z-20 w-16 h-16 bg-white/95 rounded-2xl p-3 shadow-2xl flex items-center justify-center">
+
+                  {expandedItem.imageUrls.length > 1 && (
+                     <>
+                        <button 
+                           onClick={(e) => { e.stopPropagation(); setActiveImageIndex(p => (p - 1 + expandedItem.imageUrls.length) % expandedItem.imageUrls.length); }}
+                           className="absolute left-3 top-1/2 -translate-y-1/2 z-30 w-12 h-12 bg-black/50 backdrop-blur-md rounded-full border border-white/10 text-white flex items-center justify-center hover:bg-red-600 transition-all font-black text-xl"
+                        >
+                           &lsaquo;
+                        </button>
+                        <button 
+                           onClick={(e) => { e.stopPropagation(); setActiveImageIndex(p => (p + 1) % expandedItem.imageUrls.length); }}
+                           className="absolute right-3 top-1/2 -translate-y-1/2 z-30 w-12 h-12 bg-black/50 backdrop-blur-md rounded-full border border-white/10 text-white flex items-center justify-center hover:bg-red-600 transition-all font-black text-xl"
+                        >
+                           &rsaquo;
+                        </button>
+                     </>
+                  )}
+
+                  {/* Floating Brand Logo (Mobile) */}
+                  <div className="absolute bottom-6 right-6 z-30 w-16 h-16 bg-white/95 rounded-2xl p-3 shadow-2xl flex items-center justify-center border border-white/20">
                      <img 
                         src={getBrandLogo(expandedItem.title)} 
                         alt="Logo" 
@@ -827,82 +859,98 @@ export default function DiecastDashboard() {
                </div>
 
                {/* Content (Mobile) Scrollable */}
-               <div className="flex flex-col flex-grow overflow-y-auto bg-zinc-950 p-6 pt-8 rounded-t-[40px] -mt-10 relative z-20 shadow-[0_-20px_40px_rgba(0,0,0,0.8)] border-t border-zinc-800/50">
+               <div className="flex flex-col flex-grow overflow-y-auto bg-zinc-950 p-6 pt-10 rounded-t-[44px] -mt-12 relative z-30 shadow-[0_-30px_60px_rgba(0,0,0,0.9)] border-t border-zinc-800/80">
                   <div className="flex items-center gap-3 mb-6">
-                     <span className="px-3 py-1 bg-zinc-900 border border-zinc-800 text-[10px] font-black tracking-widest text-zinc-500 rounded-lg">MODEL REF: {expandedItem.id}</span>
-                     <span className="px-3 py-1 bg-red-950/20 border border-red-900/40 text-[10px] font-black tracking-widest text-red-500 rounded-lg">{expandedItem.scale}</span>
+                     <span className="px-3 py-1 bg-zinc-900/80 border border-zinc-800 text-[9px] font-black tracking-widest text-zinc-500 rounded-lg">REG: {expandedItem.id.toString().padStart(4, '0')}</span>
+                     <span className="px-3 py-1 bg-red-950/30 border border-red-900/50 text-[9px] font-black tracking-widest text-red-500 rounded-lg">{expandedItem.scale}</span>
                   </div>
 
-                  <h2 className="text-3xl font-black text-white leading-tight mb-6">{expandedItem.title}</h2>
-                  <p className="text-sm font-black text-zinc-500 uppercase tracking-widest mb-2">Diecast Manufacturer</p>
-                  <p className="text-lg font-black text-zinc-300 border-b border-zinc-900 pb-6 mb-6">{expandedItem.manufacturer}</p>
-
-                  <p className="text-[10px] font-black text-zinc-600 uppercase tracking-widest mb-3">Observation Logs</p>
-                  <div className="text-zinc-400 text-sm leading-relaxed mb-8 bg-zinc-900/30 p-5 rounded-2xl border border-zinc-900 line-clamp-none whitespace-pre-wrap">
-                     {expandedItem.description || "N/A"}
+                  <h2 className="text-3xl font-black text-white leading-tight mb-8 tracking-tighter">{expandedItem.title}</h2>
+                  
+                  <div className="flex flex-col gap-1 mb-8">
+                     <p className="text-[10px] font-black text-zinc-600 uppercase tracking-widest">Diecast Manufacturer</p>
+                     <p className="text-lg font-black text-zinc-200 border-b border-zinc-900 pb-4">{expandedItem.manufacturer}</p>
                   </div>
 
-                  <div className="mt-auto pt-6 border-t border-zinc-900 flex flex-col gap-4">
-                     {expandedItem.imageUrls.length > 1 && (
-                        <div className="flex gap-2 overflow-x-auto hide-scrollbar pb-2">
-                           {expandedItem.imageUrls.map((url, i) => (
-                              <button 
-                                 key={i} 
-                                 onClick={() => setActiveImageIndex(i)}
-                                 className={`w-16 h-16 rounded-xl flex-shrink-0 overflow-hidden border-2 transition-all ${activeImageIndex === i ? 'border-red-600' : 'border-transparent opacity-40'}`}
-                              >
-                                 <ImageWithPlaceholder src={url} alt={`t-${i}`} className="w-full h-full" />
-                              </button>
-                           ))}
-                        </div>
-                     )}
+                  <div className="flex flex-col gap-3 mb-10">
+                     <p className="text-[10px] font-black text-zinc-600 uppercase tracking-widest">Logs / Documentation</p>
+                     <div className="text-zinc-500 text-sm leading-relaxed italic bg-zinc-900/20 p-6 rounded-3xl border border-zinc-900/50">
+                        &quot;{expandedItem.description || "No documentation."}&quot;
+                     </div>
+                  </div>
+
+                  {/* Mobile Thumbnail Strip */}
+                  {expandedItem.imageUrls.length > 1 && (
+                     <div className="flex gap-3 overflow-x-auto hide-scrollbar mb-10">
+                        {expandedItem.imageUrls.map((url, i) => (
+                           <button 
+                              key={i} 
+                              onClick={() => setActiveImageIndex(i)}
+                              className={`w-20 h-20 rounded-[20px] flex-shrink-0 overflow-hidden border-2 transition-all ${activeImageIndex === i ? 'border-red-600 scale-105 shadow-[0_0_20px_rgba(239,68,68,0.3)]' : 'border-transparent opacity-40 hover:opacity-100'}`}
+                           >
+                              <ImageWithPlaceholder src={url} alt={`t-${i}`} className="w-full h-full" />
+                           </button>
+                        ))}
+                     </div>
+                  )}
+
+                  <div className="mt-auto py-6 border-t border-zinc-900">
                      <button 
                         onClick={() => handleDeleteEntry(expandedItem.id)}
-                        className="w-full py-4 bg-zinc-900 hover:bg-red-600 text-[10px] font-black text-zinc-500 hover:text-white border border-zinc-800 rounded-2xl tracking-widest uppercase transition-all flex items-center justify-center gap-3"
+                        className="w-full py-5 bg-zinc-900/50 hover:bg-red-600 text-[10px] font-black text-zinc-600 hover:text-white border border-zinc-800 rounded-[24px] tracking-widest uppercase transition-all flex items-center justify-center gap-3 shadow-inner"
                      >
-                        <TrashIcon /> Delete Registry
+                        <TrashIcon /> Purge Registry Record
                      </button>
                   </div>
                </div>
             </div>
 
+
             {/* DESKTOP ONLY VIEW */}
             <div className="hidden md:flex flex-row h-full">
                {/* Left side: Images (Desktop) */}
-               <div className="w-[55%] relative flex flex-col bg-zinc-950 border-r border-zinc-800/80">
+               <div className="w-[58%] relative flex flex-col bg-black border-r border-zinc-800/80">
                   <div className="relative flex-grow bg-black overflow-hidden rounded-l-[40px]">
                      <ImageWithPlaceholder 
                        src={expandedItem.imageUrls[activeImageIndex]} 
                        alt={expandedItem.title}
                        className="w-full h-full"
+                       innerClassName="w-full h-full object-contain" // Better for car shapes
                      />
-                     <div className="absolute top-6 left-6 z-10 px-4 py-2 bg-black/60 backdrop-blur-md rounded-2xl border border-white/10 text-[11px] font-black text-white uppercase tracking-[0.2em]">
-                        Image Bundle / {activeImageIndex + 1} of {expandedItem.imageUrls.length}
+                     
+                     {/* Glassy Overlays (Desktop) */}
+                     <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-black/20 pointer-events-none" />
+
+                     <div className="absolute top-8 left-8 z-20 px-4 py-2 bg-black/60 backdrop-blur-xl rounded-[20px] border border-white/10 text-[10px] font-black text-white uppercase tracking-[0.3em] shadow-2xl">
+                        {activeImageIndex + 1} // {expandedItem.imageUrls.length} VIEW
                      </div>
                      
                      {expandedItem.imageUrls.length > 1 && (
-                        <div className="absolute top-1/2 -translate-y-1/2 left-0 right-0 flex justify-between px-6 z-20 pointer-events-none">
-                           <button onClick={() => setActiveImageIndex(p => (p - 1 + expandedItem.imageUrls.length) % expandedItem.imageUrls.length)} className="pointer-events-auto p-4 bg-black/40 hover:bg-red-600 rounded-full backdrop-blur-xl border border-white/5 transition-all text-white">&larr;</button>
-                           <button onClick={() => setActiveImageIndex(p => (p + 1) % expandedItem.imageUrls.length)} className="pointer-events-auto p-4 bg-black/40 hover:bg-red-600 rounded-full backdrop-blur-xl border border-white/5 transition-all text-white">&rarr;</button>
+                        <div className="absolute top-1/2 -translate-y-1/2 left-0 right-0 flex justify-between px-8 z-30 pointer-events-none">
+                           <button onClick={(e) => { e.stopPropagation(); setActiveImageIndex(p => (p - 1 + expandedItem.imageUrls.length) % expandedItem.imageUrls.length); }} className="pointer-events-auto w-14 h-14 bg-black/50 hover:bg-red-600 rounded-full backdrop-blur-2xl border border-white/5 transition-all text-white font-black text-2xl shadow-2xl hover:scale-110 flex items-center justify-center">&lsaquo;</button>
+                           <button onClick={(e) => { e.stopPropagation(); setActiveImageIndex(p => (p + 1) % expandedItem.imageUrls.length); }} className="pointer-events-auto w-14 h-14 bg-black/50 hover:bg-red-600 rounded-full backdrop-blur-2xl border border-white/5 transition-all text-white font-black text-2xl shadow-2xl hover:scale-110 flex items-center justify-center">&rsaquo;</button>
                         </div>
                      )}
 
-                     {/* Thumbnails Overlay (Desktop) */}
+                     {/* Premium Rolling Film Strip Overlay (Desktop) */}
                      {expandedItem.imageUrls.length > 1 && (
-                        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-3 p-2.5 bg-black/40 backdrop-blur-3xl rounded-[24px] border border-white/5 max-w-[80%] overflow-x-auto hide-scrollbar">
-                           {expandedItem.imageUrls.map((url, i) => (
-                              <button 
-                                 key={i}
-                                 onClick={() => setActiveImageIndex(i)}
-                                 className={`w-16 h-16 rounded-xl overflow-hidden border-2 transition-all flex-shrink-0 ${activeImageIndex === i ? 'border-red-600 scale-105' : 'border-transparent opacity-50 hover:opacity-100'}`}
-                              >
-                                 <ImageWithPlaceholder src={url} alt={`th-${i}`} className="w-full h-full" />
-                              </button>
-                           ))}
+                        <div className="absolute bottom-10 left-10 right-10 flex justify-center z-30 pointer-events-none">
+                           <div className="flex gap-3 p-3 bg-black/60 backdrop-blur-3xl rounded-[32px] border border-white/10 pointer-events-auto shadow-[0_20px_50px_rgba(0,0,0,0.6)]">
+                              {expandedItem.imageUrls.map((url, i) => (
+                                 <button 
+                                    key={i}
+                                    onClick={() => setActiveImageIndex(i)}
+                                    className={`w-14 h-14 rounded-2xl overflow-hidden border-2 transition-all flex-shrink-0 ${activeImageIndex === i ? 'border-red-600 scale-110' : 'border-transparent opacity-40 hover:opacity-100 hover:scale-105'}`}
+                                 >
+                                    <ImageWithPlaceholder src={url} alt={`th-${i}`} className="w-full h-full" />
+                                 </button>
+                              ))}
+                           </div>
                         </div>
                      )}
                   </div>
                </div>
+
 
                {/* Right side: Content (Desktop) */}
                <div className="w-[45%] flex flex-col h-full overflow-y-auto bg-zinc-950 p-12 hide-scrollbar">
