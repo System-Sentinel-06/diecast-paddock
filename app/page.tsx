@@ -392,9 +392,10 @@ const compressImage = async (file: File): Promise<Blob> => {
             if (blob) resolve(blob);
             else reject(new Error('Buffer Serialization Error'));
           },
-          'image/jpeg',
-          0.85 // Slightly higher quality for collection details
+          'image/webp',
+          0.80 // High-quality WebP for museum-grade diecast clarity
         );
+
       };
       img.onerror = () => reject(new Error('Image Process Fault'));
     };
@@ -600,9 +601,11 @@ export default function DiecastDashboard() {
      try {
        // 1. Client-Side Compression to stay under 4.5MB Vercel Limit
        const compressedBlob = await compressImage(pendingFile);
-       const finalFile = new File([compressedBlob], pendingFile.name, { type: 'image/jpeg' });
+       // Standardize to .webp for the Cloud Vault
+       const finalFile = new File([compressedBlob], `${pendingFile.name.split('.')[0]}.webp`, { type: 'image/webp' });
 
        setNotification("Pushing to Cloud Vault...");
+
        
        const formData = new FormData();
        formData.append('car_brand', newDesc || 'Standard');
