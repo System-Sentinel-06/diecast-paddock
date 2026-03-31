@@ -81,6 +81,14 @@ const TrashIcon = () => (
   </svg>
 );
 
+const SearchIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="11" cy="11" r="8"></circle>
+    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+  </svg>
+);
+
+
 // ==========================================
 // DATA & TYPES
 // ==========================================
@@ -281,6 +289,7 @@ export default function DiecastDashboard() {
   const [filterBrand, setFilterBrand] = useState('ALL');
   const [filterScale, setFilterScale] = useState('ALL');
   const [filterCarBrand, setFilterCarBrand] = useState('ALL');
+  const [searchQuery, setSearchQuery] = useState('');
 
   const [expandedItem, setExpandedItem] = useState<DiecastModel | null>(null);
   const [activeImageIndex, setActiveImageIndex] = useState(0);
@@ -301,6 +310,15 @@ export default function DiecastDashboard() {
   // Filter and Sort logic
   const processedCollection = useMemo(() => {
     let list = [...collection];
+    
+    if (searchQuery) {
+      const q = searchQuery.toLowerCase();
+      list = list.filter(i => 
+        i.title.toLowerCase().includes(q) || 
+        i.manufacturer.toLowerCase().includes(q)
+      );
+    }
+
     if (filterBrand !== 'ALL') {
       list = list.filter(i => i.manufacturer === filterBrand);
     }
@@ -321,7 +339,7 @@ export default function DiecastDashboard() {
       list.sort((a, b) => getCarBrandSlug(a.title).localeCompare(getCarBrandSlug(b.title)));
     }
     return list;
-  }, [sortBy, filterBrand, filterScale, filterCarBrand, collection]);
+  }, [sortBy, filterBrand, filterScale, filterCarBrand, collection, searchQuery]);
 
   // Statistics Hook for Profile
   const brandStats = useMemo(() => {
@@ -816,6 +834,20 @@ export default function DiecastDashboard() {
              {/* Dynamic Filter Controls */}
              {!isAdding && (
                <div className="flex flex-wrap items-center gap-2">
+
+                 {/* Search Bar */}
+                 <div className="flex items-center gap-3 px-4 h-10 bg-zinc-950 border border-zinc-800 rounded-2xl shadow-inner group focus-within:border-red-600/50 transition-all">
+                   <span className="text-zinc-600 group-focus-within:text-red-500 transition-colors">
+                     <SearchIcon />
+                   </span>
+                   <input 
+                     type="text"
+                     value={searchQuery}
+                     onChange={(e) => setSearchQuery(e.target.value)}
+                     placeholder="Search collection..."
+                     className="bg-transparent border-none outline-none text-xs font-bold text-zinc-200 placeholder-zinc-600 w-32 sm:w-40 md:w-56 focus:w-44 sm:focus:w-56 md:focus:w-80 transition-all"
+                   />
+                 </div>
 
                  {/* Brand Filter */}
                  <div className="flex items-center h-10 bg-zinc-950 border border-zinc-800 rounded-2xl overflow-hidden shadow-inner">
