@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server';
 
 export async function GET() {
   try {
-    // 1. Database Table Initialization (If it does not exist)
+    // 1. Database Table Initialization & Schema Resilience (Migration)
     await sql`
       CREATE TABLE IF NOT EXISTS cars (
         id SERIAL PRIMARY KEY,
@@ -16,7 +16,13 @@ export async function GET() {
       );
     `;
 
+    // Ensure older versions of the table have all current columns
+    try { await sql`ALTER TABLE cars ADD COLUMN IF NOT EXISTS image_url TEXT;`; } catch(e) {}
+    try { await sql`ALTER TABLE cars ADD COLUMN IF NOT EXISTS model_manufacturer TEXT;`; } catch(e) {}
+    try { await sql`ALTER TABLE cars ADD COLUMN IF NOT EXISTS full_model_name TEXT;`; } catch(e) {}
+
     // 2. Fetch the production collection
+
     const { rows } = await sql`SELECT * FROM cars ORDER BY date_added DESC`;
     
     // Map database columns to the UI data model perfectly

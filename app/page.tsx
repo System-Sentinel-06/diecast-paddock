@@ -637,8 +637,9 @@ export default function DiecastDashboard() {
        setNewBrand(''); 
        setNewDesc(''); 
        setNewImages([]);
-     } catch (err) { 
-       alert("Cloud Sync Interrupted."); 
+     } catch (err: any) { 
+       console.error("Postgres Sync Error:", err);
+       alert(`Cloud Sync Interrupted: ${err.message || 'Verification Error'}`); 
      } finally { 
        setIsUploading(false); 
      }
