@@ -532,21 +532,22 @@ export default function DiecastDashboard() {
           
           {/* Left Text Block */}
           <div className="flex flex-col items-start text-left max-w-xl flex-shrink-0 z-20">
-             <h1 className="text-6xl md:text-8xl lg:text-9xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-br from-white via-zinc-200 to-zinc-600 mb-6 drop-shadow-2xl">
+             <h1 className="text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-br from-white via-zinc-200 to-zinc-600 mb-4 sm:mb-6 drop-shadow-2xl">
                Diecast<br/><span className="text-red-600">Paddock</span>
              </h1>
 
-             <p className="text-zinc-400 font-sans text-lg md:text-xl leading-relaxed mb-10 max-w-md pr-4 font-medium drop-shadow-md border-l-2 border-red-600/40 pl-5">
-                A definitive collection catalogue. Log, filter, and manage your precision scaled garage dynamically.
+             <p className="text-zinc-400 font-sans text-base sm:text-lg md:text-xl leading-relaxed mb-8 sm:mb-10 max-w-md pr-4 font-medium drop-shadow-md border-l-2 border-red-600/40 pl-5">
+                A definitive digital catalogue to maintain your precision scaled garage. Built for genuine diecast passion.
              </p>
 
              <button 
                onClick={() => setViewState('dashboard')}
-               className="group relative flex items-center justify-center gap-4 bg-gradient-to-br from-red-600 to-red-800 px-10 py-5 rounded-full text-sm font-black tracking-widest uppercase text-white transition-all overflow-hidden shadow-[0_0_35px_rgba(220,38,38,0.4)] hover:shadow-[0_0_55px_rgba(239,68,68,0.7)] border border-red-500/50"
+               className="group relative flex items-center justify-center gap-4 bg-gradient-to-br from-red-600 to-red-800 px-8 py-4 sm:px-10 sm:py-5 rounded-full text-xs sm:text-sm font-black tracking-widest uppercase text-white transition-all overflow-hidden shadow-[0_0_35px_rgba(220,38,38,0.4)] hover:shadow-[0_0_55px_rgba(239,68,68,0.7)] border border-red-500/50"
              >
                 <span className="relative z-10 flex items-center gap-3">Explore Collection <RightArrowIcon /></span>
              </button>
           </div>
+
 
           {/* Right Logo Block - Ultra Minimalist Design */}
           <div className="w-full flex justify-center md:justify-end relative h-[250px] md:h-[400px] z-10">
@@ -867,20 +868,20 @@ export default function DiecastDashboard() {
       {/* Main Dashboard Layout */}
       <div className="relative z-10 w-full mx-auto flex flex-col gap-8 min-h-[90vh] max-w-7xl">
         
-        {/* Top Navbar */}
-        <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-5 bg-zinc-950/80 p-4 sm:p-5 rounded-3xl border border-zinc-800/80 backdrop-blur-xl sticky top-2 sm:top-4 z-40 shadow-2xl">
-          <div className="flex items-center gap-5 cursor-pointer" onClick={() => setViewState('intro')}>
-            <div className="flex h-12 items-center gap-3 bg-zinc-900 border border-zinc-800 px-4 rounded-2xl group transition-all hover:border-red-500/50">
+       {/* Top Navbar */}
+        <header className="flex flex-col md:flex-row justify-between items-stretch md:items-center gap-4 md:gap-5 bg-zinc-950/80 p-3 sm:p-5 rounded-3xl border border-zinc-800/80 backdrop-blur-xl sticky top-2 sm:top-4 z-40 shadow-2xl">
+          <div className="flex items-center justify-between md:justify-start gap-5 cursor-pointer" onClick={() => setViewState('intro')}>
+            <div className="flex h-11 md:h-12 items-center gap-3 bg-zinc-900 border border-zinc-800 px-3 md:px-4 rounded-2xl group transition-all hover:border-red-500/50">
                <div className="text-red-600 transition-transform group-hover:scale-110">
                  <CarIcon />
                </div>
-               <h1 className="text-lg font-black tracking-[0.2em] text-white uppercase mt-0.5">
+               <h1 className="text-sm md:text-lg font-black tracking-[0.2em] text-white uppercase mt-0.5">
                  Paddock
                </h1>
             </div>
           </div>
 
-          <div className="flex flex-1 max-w-xl mx-4">
+          <div className="flex flex-1 mx-0 md:mx-4">
              {!isAdding && (
                <div className="flex items-center w-full gap-3 px-4 h-11 bg-zinc-950 border border-zinc-800 rounded-2xl shadow-inner group focus-within:border-red-600/50 transition-all">
                  <span className="text-zinc-600 group-focus-within:text-red-500 transition-all scale-90 group-focus-within:scale-110">
@@ -891,11 +892,12 @@ export default function DiecastDashboard() {
                    value={searchQuery}
                    onChange={(e) => setSearchQuery(e.target.value)}
                    placeholder="SEARCH COLLECTION..."
-                   className="bg-transparent border-none outline-none text-[10px] font-black text-zinc-200 placeholder-zinc-700 w-full tracking-[0.1em] uppercase"
+                   className="bg-transparent border-none outline-none text-[9px] md:text-[10px] font-black text-zinc-200 placeholder-zinc-700 w-full tracking-[0.1em] uppercase"
                  />
                </div>
              )}
           </div>
+
 
           
           <div className="flex items-center gap-3">
@@ -919,15 +921,15 @@ export default function DiecastDashboard() {
 
         {/* Secondary Control Sub-header (Filters & Sorting) */}
         {!isAdding && (
-           <div className="flex flex-wrap items-center justify-between gap-4 bg-zinc-950/40 p-2 rounded-2xl border border-zinc-900 backdrop-blur-md animate-in slide-in-from-top-2 duration-500">
-              <div className="flex flex-wrap items-center gap-2">
+           <div className="flex flex-wrap items-center justify-between gap-3 md:gap-4 bg-zinc-950/40 p-2 rounded-2xl border border-zinc-900 backdrop-blur-md animate-in slide-in-from-top-2 duration-500 overflow-x-auto hide-scrollbar">
+              <div className="flex flex-nowrap md:flex-wrap items-center gap-2">
                  {/* Brand Filter */}
-                 <div className="flex items-center h-9 bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden">
-                    <span className="px-3 text-[9px] font-black text-red-600 uppercase tracking-widest border-r border-zinc-800 h-full flex items-center">Brand</span>
+                 <div className="flex flex-shrink-0 items-center h-9 bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden">
+                    <span className="px-2 md:px-3 text-[9px] font-black text-red-600 uppercase tracking-widest border-r border-zinc-800 h-full flex items-center">Brand</span>
                     <select
                       value={filterBrand}
                       onChange={(e) => setFilterBrand(e.target.value)}
-                      className="bg-transparent border-none text-zinc-400 focus:ring-0 outline-none pl-2 pr-6 h-full cursor-pointer appearance-none font-bold text-[10px] uppercase tracking-wide"
+                      className="bg-transparent border-none text-zinc-400 focus:ring-0 outline-none pl-2 pr-6 h-full cursor-pointer appearance-none font-bold text-[9px] md:text-[10px] uppercase tracking-wide"
                     >
                       <option value="ALL">ALL</option>
                       {uniqueBrands.map(b => <option key={b} value={b}>{b}</option>)}
@@ -935,12 +937,12 @@ export default function DiecastDashboard() {
                  </div>
 
                  {/* Scale Filter */}
-                 <div className="flex items-center h-9 bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden">
-                    <span className="px-3 text-[9px] font-black text-red-600 uppercase tracking-widest border-r border-zinc-800 h-full flex items-center">Scale</span>
+                 <div className="flex flex-shrink-0 items-center h-9 bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden">
+                    <span className="px-2 md:px-3 text-[9px] font-black text-red-600 uppercase tracking-widest border-r border-zinc-800 h-full flex items-center">Scale</span>
                     <select
                       value={filterScale}
                       onChange={(e) => setFilterScale(e.target.value)}
-                      className="bg-transparent border-none text-zinc-400 focus:ring-0 outline-none pl-2 pr-6 h-full cursor-pointer appearance-none font-bold text-[10px] uppercase tracking-wide"
+                      className="bg-transparent border-none text-zinc-400 focus:ring-0 outline-none pl-2 pr-6 h-full cursor-pointer appearance-none font-bold text-[9px] md:text-[10px] uppercase tracking-wide"
                     >
                       <option value="ALL">ALL</option>
                       {uniqueScales.map(s => <option key={s} value={s}>{s}</option>)}
@@ -948,7 +950,8 @@ export default function DiecastDashboard() {
                  </div>
               </div>
 
-              <div className="flex items-center gap-0.5 h-9 bg-zinc-900 border border-zinc-800 rounded-xl px-0.5">
+              <div className="flex items-center gap-0.5 h-9 bg-zinc-900 border border-zinc-800 rounded-xl px-0.5 flex-shrink-0">
+
                  {(['carbrand', 'recent', 'alphabetical', 'scale'] as const).map((mode) => (
                    <button
                      key={mode}
@@ -1101,7 +1104,7 @@ export default function DiecastDashboard() {
           ) : (
             <>
                {sortBy === 'carbrand' && filterCarBrand === 'ALL' ? (
-                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 animate-in fade-in duration-500 mt-2">
+                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 animate-in fade-in duration-500 mt-2">
                    {carStats.map(([slug, count]) => (
                      <div
                         key={slug}
@@ -1154,7 +1157,7 @@ export default function DiecastDashboard() {
                        </button>
                      </div>
                    )}
-                   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 animate-in fade-in duration-500 mt-2">
+                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 animate-in fade-in duration-500 mt-2">
                      {processedCollection.length === 0 ? (
                        <div className="col-span-full py-24 flex flex-col items-center justify-center text-center bg-zinc-950/60 rounded-[40px] border border-zinc-800 backdrop-blur-md">
                          <div className="w-16 h-16 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-500 mb-5 shadow-inner">
