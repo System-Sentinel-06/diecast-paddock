@@ -1,36 +1,64 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Diecast Paddock 🏎️💨
 
-## Getting Started
+Diecast Paddock is a high-fidelity, racing-inspired digital catalogue specifically designed for precision scaled diecast collectors (1:64, 1:43, 1:18, etc.). It provides a professional, "System Sentinel" style dashboard to log, manage, and showcase a growing precision scaled garage with speed and style.
 
-First, run the development server:
+## 🏁 The Intent
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+The project was born out of a need for a dedicated, visually stunning space to manage diecast collections that traditional spreadsheets or generic apps fail to inspire. Diecast Paddock aims to:
+- **Celebrate the Detail**: Provide a space where every casting is treated with the importance it deserves.
+- **Dynamic Organization**: Move beyond simple lists into a manufacturer-based "Garage" navigation system.
+- **Cloud-Ready Persistence**: Integrate seamlessly with modern cloud storage for real-world collection management.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🏆 Key Achievements & Features
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 1. High-Fidelity Racing UI
+- **Ambient Racing Glow**: A deep red, ambient-lit interface featuring a customized dot-matrix and striped racing pattern.
+- **Premium Design Language**: Modern typography, glassmorphism, and smooth micro-animations for a high-end "racing paddock" feel.
+- **Dynamic Headers**: Context-aware top navigation with custom-designed car and tire iconography.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 2. The "Garage" Navigation
+- **Manufacturer-Centric Browsing**: A visual menu system using car brand logos (Porsche, Nissan, Ferrari, etc.) to navigate your collection.
+- **Deep Filtering & Sorting**: Sort by acquisition date, model alphabetics, or scale dimension. Filter by diecast manufacturer (Mini GT, Hot Wheels Premium, Inno64, etc.) or car brand.
 
-## Learn More
+### 3. Detailed Collection Registry
+- **Multi-Image Support**: Log models with multiple high-quality angles.
+- **Observation Notes**: Dedicated space for acquisition details, spec tracking, and personal thoughts on each casting.
+- **Scale Profiles**: Support for all major diecast scales from 1:64 to 1:18.
 
-To learn more about Next.js, take a look at the following resources:
+### 4. Cloud Storage Integration (Vercel Blob)
+- **Real-Time Uploads**: Integrated with **Vercel Blob** for persistent, cloud-hosted image storage.
+- **Loading Intelligence**: Dynamic spinners and upload locks ensure data integrity while your photos are moving to the cloud.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 🛠️ Tech Stack
+- **Framework**: [Next.js](https://nextjs.org/) (App Router)
+- **Language**: [TypeScript](https://www.typescriptlang.org/)
+- **Styling**: [Tailwind CSS](https://tailwindcss.com/)
+- **Storage**: [Vercel Blob](https://vercel.com/storage/blob)
+- **Deployment**: [Vercel](https://vercel.com/)
 
-## Deploy on Vercel
+## 🚀 Getting Started
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+1. **Clone & Install**:
+   ```bash
+   npm install
+   ```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+2. **Environment Setup**:
+   Add your Vercel Blob token to a `.env.local` file:
+   ```env
+   BLOB_READ_WRITE_TOKEN=your_token_here
+   ```
+
+3. **Run Locally**:
+   ```bash
+   npm run dev
+   ```
+
+4. **Open Dashboard**:
+   Navigate to [http://localhost:3000](http://localhost:3000) to enter the Paddock.
+
+---
+
+Designed for collectors, by collectors. 🥂
