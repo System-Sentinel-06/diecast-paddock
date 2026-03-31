@@ -204,44 +204,8 @@ type DiecastModel = {
   imageUrls: string[];
 };
 
-const initialMockCollection: DiecastModel[] = [
-  {
-    id: 1,
-    title: "Porsche 911 GT3 RS",
-    scale: "1:64",
-    manufacturer: "Mini GT",
-    description: "Picked this up recently. Beautiful casting with rubber tires and great detail.",
+const initialMockCollection: DiecastModel[] = [];
 
-    dateAdded: "2026-02-15",
-    imageUrls: [
-      "https://images.unsplash.com/photo-1503376762364-bbcf086c9688?q=80&w=800&auto=format&fit=crop"
-    ]
-  },
-  {
-    id: 2,
-    title: "Nissan Skyline GT-R R34",
-    scale: "1:64",
-    manufacturer: "Hot Wheels - Premium",
-    description: "From the Fast & Furious premium set. Diecast base and real riders.",
-
-    dateAdded: "2026-01-20",
-    imageUrls: [
-      "https://images.unsplash.com/photo-1600712242805-5f78671b24da?q=80&w=800&auto=format&fit=crop"
-    ]
-  },
-  {
-    id: 3,
-    title: "McLaren F1 LM",
-    scale: "1:64",
-    manufacturer: "Hot Wheels - Mainline",
-    description: "Papaya orange mainline. Found it on the pegs at Target. Card is slightly bent.",
-
-    dateAdded: "2025-11-05",
-    imageUrls: [
-      "https://images.unsplash.com/photo-1620882813813-808ab116d418?q=80&w=800&auto=format&fit=crop"
-    ]
-  }
-];
 
 // ==========================================
 // SHARED BACKGROUND COMPONENT
