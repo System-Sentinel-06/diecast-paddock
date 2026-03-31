@@ -271,6 +271,56 @@ const capitalizeSlug = (slug: string) => {
 };
 
 // ==========================================
+// IMAGE COMPRESSION UTILITY
+// ==========================================
+const compressImage = async (file: File): Promise<Blob> => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = (event) => {
+      const img = new Image();
+      img.src = event.target?.result as string;
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        const MAX_WIDTH = 1200;
+        const MAX_HEIGHT = 1200;
+        let width = img.width;
+        let height = img.height;
+
+        if (width > height) {
+          if (width > MAX_WIDTH) {
+            height *= MAX_WIDTH / width;
+            width = MAX_WIDTH;
+          }
+        } else {
+          if (height > MAX_HEIGHT) {
+            width *= MAX_HEIGHT / height;
+            height = MAX_HEIGHT;
+          }
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        ctx?.drawImage(img, 0, 0, width, height);
+        
+        canvas.toBlob(
+          (blob) => {
+            if (blob) resolve(blob);
+            else reject(new Error('Canvas toBlob failed'));
+          },
+          'image/jpeg',
+          0.8 // target 80% quality for excellent balance
+        );
+      };
+      img.onerror = reject;
+    };
+    reader.onerror = reject;
+  });
+};
+
+
+// ==========================================
 // MAIN APP COMPONENT
 // ==========================================
 export default function DiecastDashboard() {
@@ -395,13 +445,21 @@ export default function DiecastDashboard() {
         const files = Array.from(e.target.files);
         // Upload files sequentially or in parallel? Parallel is faster.
         const uploadPromises = files.map(async (file) => {
-          const response = await fetch(`/api/upload?filename=${file.name}`, {
+          // Perform client-side compression to JPEG
+          const compressedBlob = await compressImage(file);
+          
+          // Map original filename to a .jpg extension for uniformity
+          const cleanName = file.name.replace(/\.[^/.]+$/, "").replace(/[^a-zA-Z0-9]/g, "_");
+          const filename = `${cleanName}_compressed.jpg`;
+          
+          const response = await fetch(`/api/upload?filename=${filename}`, {
             method: 'POST',
-            body: file,
+            body: compressedBlob,
           });
           const newBlob = await response.json();
           return newBlob.url;
         });
+
         
         const urls = await Promise.all(uploadPromises);
         setNewImages(prev => [...prev, ...urls]);
@@ -811,111 +869,99 @@ export default function DiecastDashboard() {
         
         {/* Top Navbar */}
         <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-5 bg-zinc-950/80 p-4 sm:p-5 rounded-3xl border border-zinc-800/80 backdrop-blur-xl sticky top-2 sm:top-4 z-40 shadow-2xl">
-          <div className="flex items-center gap-4 cursor-pointer hover:opacity-80 transition-opacity" onClick={() => setViewState('intro')}>
-            <button 
-               className="flex h-12 w-12 items-center justify-center rounded-2xl bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors shadow-md"
-               title="Home"
-            >
-               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
-            </button>
-            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-red-600 to-red-800 text-white shadow-[0_0_20px_rgba(239,68,68,0.4)] relative transition-transform hover:scale-105">
-              <CarIcon />
-            </div>
-
-            <div>
-              <h1 className="text-xl md:text-2xl font-black tracking-tight text-white flex items-center gap-2">
-                Paddock
-              </h1>
+          <div className="flex items-center gap-5 cursor-pointer" onClick={() => setViewState('intro')}>
+            <div className="flex h-12 items-center gap-3 bg-zinc-900 border border-zinc-800 px-4 rounded-2xl group transition-all hover:border-red-500/50">
+               <div className="text-red-600 transition-transform group-hover:scale-110">
+                 <CarIcon />
+               </div>
+               <h1 className="text-lg font-black tracking-[0.2em] text-white uppercase mt-0.5">
+                 Paddock
+               </h1>
             </div>
           </div>
-          
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 w-full sm:w-auto">
-             
-             {/* Dynamic Filter Controls */}
+
+          <div className="flex flex-1 max-w-xl mx-4">
              {!isAdding && (
-               <div className="flex flex-wrap items-center gap-2">
+               <div className="flex items-center w-full gap-3 px-4 h-11 bg-zinc-950 border border-zinc-800 rounded-2xl shadow-inner group focus-within:border-red-600/50 transition-all">
+                 <span className="text-zinc-600 group-focus-within:text-red-500 transition-all scale-90 group-focus-within:scale-110">
+                   <SearchIcon />
+                 </span>
+                 <input 
+                   type="text"
+                   value={searchQuery}
+                   onChange={(e) => setSearchQuery(e.target.value)}
+                   placeholder="SEARCH COLLECTION..."
+                   className="bg-transparent border-none outline-none text-[10px] font-black text-zinc-200 placeholder-zinc-700 w-full tracking-[0.1em] uppercase"
+                 />
+               </div>
+             )}
+          </div>
 
-                 {/* Search Bar */}
-                 <div className="flex items-center gap-3 px-4 h-10 bg-zinc-950 border border-zinc-800 rounded-2xl shadow-inner group focus-within:border-red-600/50 transition-all">
-                   <span className="text-zinc-600 group-focus-within:text-red-500 transition-colors">
-                     <SearchIcon />
-                   </span>
-                   <input 
-                     type="text"
-                     value={searchQuery}
-                     onChange={(e) => setSearchQuery(e.target.value)}
-                     placeholder="Search collection..."
-                     className="bg-transparent border-none outline-none text-xs font-bold text-zinc-200 placeholder-zinc-600 w-32 sm:w-40 md:w-56 focus:w-44 sm:focus:w-56 md:focus:w-80 transition-all"
-                   />
-                 </div>
+          
+          <div className="flex items-center gap-3">
+             <button 
+               onClick={() => setViewState('profile')}
+               className="flex items-center justify-center h-11 w-11 rounded-2xl bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white hover:bg-zinc-800 transition-all hover:scale-105"
+               title="Profile Stats"
+             >
+                <TireIcon />
+             </button>
 
+             <button 
+               onClick={() => setIsAdding(!isAdding)}
+               className="flex items-center justify-center gap-2 rounded-2xl px-5 h-11 text-[11px] font-black uppercase tracking-widest text-white bg-red-600 hover:bg-red-500 hover:shadow-[0_4px_20px_rgba(239,68,68,0.4)] transition-all"
+             >
+               {isAdding ? <CloseIcon /> : <PlusIcon />}
+               <span>{isAdding ? "CANCEL" : "ADD NEW"}</span>
+             </button>
+          </div>
+        </header>
+
+        {/* Secondary Control Sub-header (Filters & Sorting) */}
+        {!isAdding && (
+           <div className="flex flex-wrap items-center justify-between gap-4 bg-zinc-950/40 p-2 rounded-2xl border border-zinc-900 backdrop-blur-md animate-in slide-in-from-top-2 duration-500">
+              <div className="flex flex-wrap items-center gap-2">
                  {/* Brand Filter */}
-                 <div className="flex items-center h-10 bg-zinc-950 border border-zinc-800 rounded-2xl overflow-hidden shadow-inner">
-                   <span className="px-3 text-[10px] font-black text-red-600 uppercase tracking-widest border-r border-zinc-800 h-full flex items-center select-none">Brand</span>
-                   <div className="relative flex items-center">
-                     <select
-                       value={filterBrand}
-                       onChange={(e) => setFilterBrand(e.target.value)}
-                       className="bg-transparent border-none text-zinc-200 focus:ring-0 outline-none pl-3 pr-7 py-0 h-10 cursor-pointer appearance-none font-bold text-xs"
-                     >
-                       <option className="bg-zinc-950 text-zinc-200" value="ALL">All</option>
-                       {uniqueBrands.map(b => <option className="bg-zinc-950 text-zinc-200" key={b} value={b}>{b}</option>)}
-                     </select>
-                     <svg className="absolute right-2 pointer-events-none text-red-600" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
-                   </div>
+                 <div className="flex items-center h-9 bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden">
+                    <span className="px-3 text-[9px] font-black text-red-600 uppercase tracking-widest border-r border-zinc-800 h-full flex items-center">Brand</span>
+                    <select
+                      value={filterBrand}
+                      onChange={(e) => setFilterBrand(e.target.value)}
+                      className="bg-transparent border-none text-zinc-400 focus:ring-0 outline-none pl-2 pr-6 h-full cursor-pointer appearance-none font-bold text-[10px] uppercase tracking-wide"
+                    >
+                      <option value="ALL">ALL</option>
+                      {uniqueBrands.map(b => <option key={b} value={b}>{b}</option>)}
+                    </select>
                  </div>
 
                  {/* Scale Filter */}
-                 <div className="flex items-center h-10 bg-zinc-950 border border-zinc-800 rounded-2xl overflow-hidden shadow-inner">
-                   <span className="px-3 text-[10px] font-black text-red-600 uppercase tracking-widest border-r border-zinc-800 h-full flex items-center select-none">Scale</span>
-                   <div className="relative flex items-center">
-                     <select
-                       value={filterScale}
-                       onChange={(e) => setFilterScale(e.target.value)}
-                       className="bg-transparent border-none text-zinc-200 focus:ring-0 outline-none pl-3 pr-7 py-0 h-10 cursor-pointer appearance-none font-bold text-xs"
-                     >
-                       <option className="bg-zinc-950 text-zinc-200" value="ALL">All</option>
-                       {uniqueScales.map(s => <option className="bg-zinc-950 text-zinc-200" key={s} value={s}>{s}</option>)}
-                     </select>
-                     <svg className="absolute right-2 pointer-events-none text-red-600" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
-                   </div>
+                 <div className="flex items-center h-9 bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden">
+                    <span className="px-3 text-[9px] font-black text-red-600 uppercase tracking-widest border-r border-zinc-800 h-full flex items-center">Scale</span>
+                    <select
+                      value={filterScale}
+                      onChange={(e) => setFilterScale(e.target.value)}
+                      className="bg-transparent border-none text-zinc-400 focus:ring-0 outline-none pl-2 pr-6 h-full cursor-pointer appearance-none font-bold text-[10px] uppercase tracking-wide"
+                    >
+                      <option value="ALL">ALL</option>
+                      {uniqueScales.map(s => <option key={s} value={s}>{s}</option>)}
+                    </select>
                  </div>
+              </div>
 
-                 {/* Sort Pills */}
-                 <div className="flex items-center gap-0.5 h-10 bg-zinc-950 border border-zinc-800 rounded-2xl px-1 shadow-inner">
-                   {(['carbrand', 'recent', 'alphabetical', 'scale'] as const).map((mode) => (
-                     <button
-                       key={mode}
-                       onClick={() => setSortBy(mode)}
-                       className={`h-8 px-3 rounded-xl text-[11px] font-black uppercase tracking-widest transition-all ${sortBy === mode ? 'bg-red-600 text-white shadow-sm shadow-red-900' : 'text-zinc-500 hover:text-zinc-200 hover:bg-zinc-900'}`}
-                     >
-                       {mode === 'carbrand' ? 'Garage' : mode === 'alphabetical' ? 'A-Z' : mode === 'recent' ? 'Recent' : 'Scale'}
-                     </button>
-                   ))}
-                 </div>
+              <div className="flex items-center gap-0.5 h-9 bg-zinc-900 border border-zinc-800 rounded-xl px-0.5">
+                 {(['carbrand', 'recent', 'alphabetical', 'scale'] as const).map((mode) => (
+                   <button
+                     key={mode}
+                     onClick={() => setSortBy(mode)}
+                     className={`h-7 px-3 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all ${sortBy === mode ? 'bg-red-600 text-white shadow-sm shadow-red-900' : 'text-zinc-500 hover:text-zinc-200 hover:bg-zinc-950'}`}
+                   >
+                     {mode === 'carbrand' ? 'GARAGE' : mode === 'alphabetical' ? 'A-Z' : mode === 'recent' ? 'NEW' : 'SIZE'}
+                   </button>
+                 ))}
+              </div>
+           </div>
+        )}
 
-               </div>
-             )}
-
-            <div className="flex items-center gap-3 w-full sm:w-auto">
-               <button 
-                 onClick={() => setViewState('profile')}
-                 className="flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-2xl bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors shadow-md"
-                 title="Open Settings & Profile"
-               >
-                  <TireIcon />
-               </button>
-
-               <button 
-                 onClick={() => setIsAdding(!isAdding)}
-                 className="flex-grow sm:flex-grow-0 flex items-center justify-center gap-2 rounded-2xl px-6 py-3 text-sm font-black uppercase tracking-widest text-white bg-red-600 hover:bg-red-500 hover:shadow-[0_4px_25px_rgba(239,68,68,0.5)] transition-all focus:outline-none h-12"
-               >
-                 {isAdding ? <CloseIcon /> : <PlusIcon />}
-                 {isAdding ? "Cancel" : "Add New"}
-               </button>
-            </div>
-          </div>
-        </header>
 
         <main className="pb-12 flex-grow flex flex-col pt-2">
           {isAdding ? (
