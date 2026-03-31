@@ -45,13 +45,14 @@ const UserIcon = () => (
   </svg>
 );
 
-const TireIcon = () => (
-  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+const TireIcon = ({ className = "" }: { className?: string }) => (
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className={className}>
     <circle cx="12" cy="12" r="9" />
     <circle cx="12" cy="12" r="3" />
     <path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6l1.4 1.4M17 17l1.4 1.4M5.6 18.4l1.4-1.4M17 7l1.4-1.4" />
   </svg>
 );
+
 
 const RightArrowIcon = () => (
   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -1068,32 +1069,32 @@ export default function DiecastDashboard() {
 
                {/* Right side: Content (Desktop) */}
                <div className="w-[45%] flex flex-col h-full overflow-y-auto bg-zinc-950 p-12 items-center text-center hide-scrollbar">
-                  <div className="flex items-center justify-center gap-6 mb-8 w-full">
-                     <span className="px-4 py-1.5 bg-zinc-900 border border-zinc-800 text-[10px] font-black text-zinc-500 rounded-xl tracking-tighter">SERIAL_{expandedItem.id.toString().padStart(5, '0')}</span>
+                  <div className="flex items-center justify-center gap-6 mb-8 w-full border-b border-zinc-900 pb-8">
+                     <span className="px-4 py-1.5 bg-zinc-900 border border-zinc-800 text-[10px] font-black text-zinc-500 rounded-xl tracking-tighter shadow-inner">SERIAL_{expandedItem.id.toString().padStart(5, '0')}</span>
                      <img 
                         src={getBrandLogo(expandedItem.title)} 
                         alt="Logo" 
-                        className="h-10 w-auto object-contain bg-white rounded-lg p-1.5" 
+                        className="h-10 w-auto object-contain bg-white rounded-lg p-1.5 shadow-2xl" 
                         onError={(e) => { (e.currentTarget.parentNode as HTMLDivElement).style.display = 'none'; }}
                      />
                   </div>
 
-                  <h2 className="text-5xl font-black text-white leading-tight mb-8 tracking-tighter w-full">{expandedItem.title}</h2>
+                  <h1 className="text-5xl font-black text-white leading-tight mb-8 tracking-tighter w-full max-w-[80%] mx-auto">{expandedItem.title}</h1>
                   
-                  <div className="grid grid-cols-2 gap-4 border-b border-zinc-900 pb-10 mb-10 w-full">
-                     <div className="p-6 bg-zinc-900/40 rounded-[32px] border border-zinc-800/40">
-                        <p className="text-[10px] font-black text-zinc-600 uppercase tracking-widest mb-1">Manufacturer</p>
+                  <div className="grid grid-cols-2 gap-4 border-b border-zinc-900 pb-10 mb-10 w-full animate-in zoom-in-95 duration-500">
+                     <div className="p-6 bg-zinc-900/40 backdrop-blur-xl rounded-[32px] border border-zinc-800/40 group/stat hover:border-red-900 transition-all">
+                        <p className="text-[10px] font-black text-zinc-600 uppercase tracking-widest mb-1 group-hover/stat:text-red-500">Manufacturer</p>
                         <p className="text-xl font-black text-zinc-200">{expandedItem.manufacturer}</p>
                      </div>
-                     <div className="p-6 bg-zinc-900/40 rounded-[32px] border border-zinc-800/40">
-                        <p className="text-[10px] font-black text-zinc-600 uppercase tracking-widest mb-1">Scale Ratio</p>
+                     <div className="p-6 bg-zinc-900/40 backdrop-blur-xl rounded-[32px] border border-zinc-800/40 group/stat hover:border-red-900 transition-all">
+                        <p className="text-[10px] font-black text-zinc-600 uppercase tracking-widest mb-1 group-hover/stat:text-red-500">Scale Ratio</p>
                         <p className="text-xl font-black text-red-500 tracking-tighter">{expandedItem.scale}</p>
                      </div>
                   </div>
 
-                  <div className="flex flex-col gap-4 mb-auto w-full">
-                     <h4 className="text-[10px] font-black text-zinc-600 uppercase tracking-widest">Registry Documentation</h4>
-                     <p className="text-lg text-zinc-400 leading-relaxed font-medium bg-zinc-900/20 p-8 rounded-[32px] border border-zinc-900/50 italic">
+                  <div className="flex flex-col gap-4 mb-auto w-full items-center">
+                     <h4 className="text-[10px] font-black text-zinc-600 uppercase tracking-widest bg-zinc-900/80 px-4 py-1 rounded-full border border-zinc-800">Registry Documentation</h4>
+                     <p className="text-lg text-zinc-400 leading-relaxed font-medium bg-zinc-900/20 p-8 rounded-[32px] border border-zinc-900/50 italic max-w-[90%] mx-auto">
                         &quot;{expandedItem.description || "No documentation attached."}&quot;
                      </p>
                   </div>
@@ -1411,12 +1412,13 @@ export default function DiecastDashboard() {
                          className="px-4 py-3 md:px-6 md:py-3 rounded-xl text-xs font-bold text-white bg-zinc-800 hover:bg-red-600 transition-colors uppercase tracking-widest shadow-sm border border-zinc-700 hover:border-red-500 flex items-center gap-2 shrink-0"
                        >
                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="hidden sm:block"><path d="M19 12H5"></path><polyline points="12 19 5 12 12 5"></polyline></svg>
+                         <TireIcon className="w-4 h-4" />
                          <span className="hidden sm:block">Garage</span>
                          <span className="block sm:hidden">Back</span>
                        </button>
                      </div>
                    )}
-                   <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-2 sm:gap-6 animate-in fade-in duration-500 mt-2">
+                   <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-1.5 sm:gap-6 animate-in fade-in duration-500 mt-2">
                      {processedCollection.length === 0 ? (
                        <div className="col-span-full py-24 flex flex-col items-center justify-center text-center bg-zinc-950/60 rounded-[40px] border border-zinc-800 backdrop-blur-md">
                          <div className="w-16 h-16 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-500 mb-5 shadow-inner">
@@ -1429,8 +1431,9 @@ export default function DiecastDashboard() {
                     <div
                       key={item.id}
                       onClick={() => setExpandedItem(item)}
-                      className="group relative flex flex-col bg-zinc-950 rounded-[24px] sm:rounded-[40px] overflow-hidden cursor-pointer transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_20px_50px_rgba(239,68,68,0.2)] border border-zinc-900 hover:border-red-600/30"
+                      className="group relative flex flex-col bg-zinc-950 rounded-[20px] sm:rounded-[40px] overflow-hidden cursor-pointer transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_20px_50px_rgba(239,68,68,0.2)] border border-zinc-900 hover:border-red-600/30"
                     >
+
                       <div className="relative aspect-[4/3] overflow-hidden">
                         <ImageWithPlaceholder 
                           src={item.imageUrls[0]} 
@@ -1456,15 +1459,15 @@ export default function DiecastDashboard() {
                         )}
                       </div>
 
-                      <div className="flex flex-col p-4 sm:p-6 pt-2">
-                        <h3 className="text-sm sm:text-lg font-black tracking-tight text-white group-hover:text-red-500 transition-colors line-clamp-2 leading-tight mb-2 sm:mb-4">
+                      <div className="flex flex-col p-3 sm:p-6 pt-2">
+                        <h3 className="text-xs sm:text-lg font-black tracking-tight text-white group-hover:text-red-500 transition-colors line-clamp-2 leading-tight mb-1 sm:mb-4">
                           {item.title}
                         </h3>
                         <div className="flex items-center justify-between mt-auto">
-                          <span className="text-[10px] font-black text-zinc-500 uppercase tracking-[0.2em]">
+                          <span className="hidden sm:inline text-[9px] font-black text-zinc-600 uppercase tracking-widest">
                             {item.manufacturer}
                           </span>
-                          <span className="px-3 py-1 text-[10px] font-black tracking-tighter bg-red-600/10 text-red-500 rounded-lg border border-red-900/30">
+                          <span className="text-[10px] sm:text-[11px] font-black text-red-600/80 tracking-tighter">
                             {item.scale}
                           </span>
                         </div>
