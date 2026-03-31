@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useMemo, useEffect } from 'react';
+import { addCarToPaddock } from '@/app/actions';
 
 // ==========================================
 // ICONS
@@ -435,6 +436,8 @@ export default function DiecastDashboard() {
   const [newImages, setNewImages] = useState<string[]>([]);
   const [isUploading, setIsUploading] = useState(false);
   const [notification, setNotification] = useState<string | null>(null);
+  const [pendingFile, setPendingFile] = useState<File | null>(null);
+
 
   useEffect(() => {
     if (notification) { const timer = setTimeout(() => setNotification(null), 3000); return () => clearTimeout(timer); }
@@ -572,64 +575,41 @@ export default function DiecastDashboard() {
   // Actions
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
-      setIsUploading(true);
-      try {
-        const files = Array.from(e.target.files);
-        // Upload files sequentially or in parallel? Parallel is faster.
-        const uploadPromises = files.map(async (file) => {
-          // Perform client-side compression to JPEG
-          const compressedBlob = await compressImage(file);
-          
-          // Map original filename to a .jpg extension for uniformity
-          const cleanName = file.name.replace(/\.[^/.]+$/, "").replace(/[^a-zA-Z0-9]/g, "_");
-          const filename = `${cleanName}_compressed.jpg`;
-          
-          const response = await fetch(`/api/upload?filename=${filename}`, {
-            method: 'POST',
-            body: compressedBlob,
-          });
-          const newBlob = await response.json();
-          return newBlob.url;
-        });
-
-        
-        const urls = await Promise.all(uploadPromises);
-        setNewImages(prev => [...prev, ...urls]);
-      } catch (error) {
-        console.error('Error uploading images:', error);
-        alert('Failed to upload images. Please try again.');
-      } finally {
-        setIsUploading(false);
-      }
+      const file = e.target.files[0];
+      setPendingFile(file);
+      
+      // Still allow local preview if needed, or just show filename
+      const objectUrl = URL.createObjectURL(file);
+      setNewImages([objectUrl]);
     }
   };
 
 
+
   const handleAddEntry = async () => {
-     if(!newTitle || !newBrand) return;
-     if(!newImages.length && !isUploading) { alert("Missing Photo: Please upload at least one image."); return; }
+     if(!newTitle || !newBrand || !pendingFile) {
+        alert("Missing Data: Title, Manufacturer and Photo are mandatory.");
+        return;
+     }
      
      setIsUploading(true);
-     setNotification("Syncing with Cloud...");
+     setNotification("Starting Cloud Sync Workflow...");
      
+     const formData = new FormData();
+     formData.append('car_brand', newDesc || 'Standard');
+     formData.append('model_manufacturer', newBrand);
+     formData.append('scale', newScale);
+     formData.append('full_model_name', newTitle);
+     formData.append('image_file', pendingFile);
+
      try {
-       const carData = { 
-          car_brand: newDesc || 'Standard', 
-          model_manufacturer: newBrand, 
-          scale: newScale, 
-          full_model_name: newTitle, 
-          image_url: newImages[0] 
-       };
+       const result = await addCarToPaddock(formData);
 
-       const response = await fetch('/api/paddock', { 
-          method: 'POST', 
-          headers: { 'Content-Type': 'application/json' }, 
-          body: JSON.stringify(carData) 
-       });
+       if (result?.error) {
+          throw new Error(result.error);
+       }
 
-       if (!response.ok) throw new Error("Sync Failed");
-
-       setNotification(`Entry Secured: ${newTitle}`);
+       setNotification(`Vault Entry Complete: ${newTitle}`);
        refreshCollection();
        
        setIsAdding(false); 
@@ -637,13 +617,15 @@ export default function DiecastDashboard() {
        setNewBrand(''); 
        setNewDesc(''); 
        setNewImages([]);
+       setPendingFile(null);
      } catch (err: any) { 
-       console.error("Postgres Sync Error:", err);
-       alert(`Cloud Sync Interrupted: ${err.message || 'Verification Error'}`); 
+       console.error("Server Action Sync Error:", err);
+       alert(`Cloud Sync Interrupted: ${err.message || 'Check connection'}`); 
      } finally { 
        setIsUploading(false); 
      }
   };
+
 
   const handleDeleteEntry = async (id: number) => {
     try {
@@ -1347,8 +1329,9 @@ export default function DiecastDashboard() {
                     </button>
                     <button 
                       onClick={handleAddEntry}
-                      disabled={!newTitle || !newBrand || isUploading}
+                      disabled={!newTitle || !newBrand || !pendingFile || isUploading}
                       className="px-8 py-4 rounded-full text-sm font-black bg-white text-black hover:bg-zinc-200 disabled:opacity-50 disabled:cursor-not-allowed transition-all uppercase tracking-widest shadow-xl flex items-center gap-2"
+
                     >
                       {isUploading ? <div className="w-4 h-4 border-2 border-black border-t-transparent rounded-full animate-spin"></div> : null}
                       {isUploading ? 'Processing...' : 'Initialize Entry'}
