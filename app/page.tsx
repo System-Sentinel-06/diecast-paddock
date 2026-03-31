@@ -104,41 +104,30 @@ const SearchIcon = () => (
   </svg>
 );
 
-const ImageWithPlaceholder = ({ src, alt, className, innerClassName = "w-full h-full object-cover" }: { src: string, alt: string, className?: string, innerClassName?: string }) => {
+const ImageWithPlaceholder = ({ src, alt, className = "", innerClassName = "", priority = false }: { src: string; alt: string; className?: string; innerClassName?: string; priority?: boolean }) => {
   const [isLoaded, setIsLoaded] = useState(false);
-  const [hasError, setHasError] = useState(false);
-  
+  const [error, setError] = useState(false);
+
+  // Optimized Skeleton Blur Data URL (Static)
+  const blurUrl = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiBmaWxsPSIjMTgxODE4Ii8+PC9zdmc+";
+
   return (
-    <div className={`relative overflow-hidden bg-zinc-950 ${className}`}>
-      {/* Skeleton / Pulse Layer - only show if not loaded and no error */}
-      {(!isLoaded && !hasError) && (
-        <div className="absolute inset-0 bg-zinc-900">
-           <div className="w-full h-full bg-gradient-to-tr from-zinc-950 via-zinc-900 to-zinc-950 animate-pulse" />
-           <div className="absolute inset-0 flex items-center justify-center">
-              <div className="w-6 h-6 border-2 border-red-950 border-t-red-600 rounded-full animate-spin" />
-           </div>
+    <div className={`relative overflow-hidden ${className} bg-zinc-900/50`}>
+      {(!isLoaded || error) && (
+        <div className="absolute inset-0 z-10 animate-pulse bg-zinc-900 flex items-center justify-center">
+            <CarIcon />
         </div>
       )}
-
-      {(hasError || !src) ? (
-        <div className="absolute inset-0 flex items-center justify-center bg-zinc-950 text-zinc-900/50">
-           <CarIcon />
-        </div>
-      ) : (
-
-        <img 
-          key={src} // Core fix: forces refresh when user toggles gallery images
-          src={src} 
-          alt={alt}
-          onLoad={() => {
-             // Slight delay to ensure the transition feels intentional
-             setTimeout(() => setIsLoaded(true), 150);
-          }}
-          onError={() => setHasError(true)}
-          className={`${innerClassName} transition-all duration-1000 ease-in-out ${isLoaded ? 'opacity-100 scale-100 blur-0' : 'opacity-0 scale-110 blur-3xl'}`}
-        />
-      )}
-
+      
+      <img
+        src={error ? "https://images.unsplash.com/photo-1542273917363-3b1817f69a2d?q=80&w=800&auto=format&fit=crop" : src}
+        alt={alt}
+        loading={priority ? 'eager' : 'lazy'}
+        onLoad={() => setIsLoaded(true)}
+        onError={() => setError(true)}
+        className={`${innerClassName} transition-all duration-700 ease-out ${isLoaded ? 'opacity-100 scale-100 placeholder-blur' : 'opacity-0 scale-110'}`}
+        style={{ filter: isLoaded ? 'none' : 'blur(20px)' }}
+      />
     </div>
   );
 };
@@ -393,8 +382,9 @@ const compressImage = async (file: File): Promise<Blob> => {
             else reject(new Error('Buffer Serialization Error'));
           },
           'image/webp',
-          0.80 // High-quality WebP for museum-grade diecast clarity
+          0.70 // High-performance WebP compression for lightning-fast delivery
         );
+
 
       };
       img.onerror = () => reject(new Error('Image Process Fault'));

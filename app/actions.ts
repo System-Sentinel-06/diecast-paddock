@@ -14,7 +14,21 @@ export async function addCarToPaddock(formData: FormData) {
     const fullModelName = formData.get('full_model_name') as string;
     const imageFile = formData.get('image_file') as File;
 
+    // 0. Identity Check: De-duplication Policy
+    const existing = await sql`
+      SELECT id FROM cars 
+      WHERE full_model_name = ${fullModelName} 
+      AND model_manufacturer = ${modelManufacturer} 
+      LIMIT 1;
+    `;
+
+    
+    if (existing.rowCount && existing.rowCount > 0) {
+      return { error: 'Record already exists in the Registry.' };
+    }
+
     // 1. Image Safety & Size Validation
+
     if (!imageFile || imageFile.size === 0) {
       console.error('Validation Error: Asset Missing');
       return { error: 'Photographic Asset Required' };
