@@ -434,6 +434,12 @@ export default function DiecastDashboard() {
   const [newDesc, setNewDesc] = useState('');
   const [newImages, setNewImages] = useState<string[]>([]);
   const [isUploading, setIsUploading] = useState(false);
+  const [notification, setNotification] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (notification) { const timer = setTimeout(() => setNotification(null), 3000); return () => clearTimeout(timer); }
+  }, [notification]);
+
 
   // Extract unique filters based on CURRENT collection items
   const uniqueBrands = useMemo(() => Array.from(new Set(collection.map(i => i.manufacturer))), [collection]);
@@ -546,25 +552,17 @@ export default function DiecastDashboard() {
   }, []);
 
 
-  // Vercel Blob Persistence: Save (Debounced)
-  useEffect(() => {
-    if (!isDataLoaded) return;
+  // Postgres Persistence: Refresh
+  const refreshCollection = async () => {
+    try {
+      const response = await fetch('/api/paddock');
+      const data = await response.json();
+      if (data.collection) setCollection(data.collection);
+    } catch (e) {
+      console.error("Refresh Failed:", e);
+    }
+  };
 
-    const syncToBlob = async () => {
-      try {
-        await fetch('/api/paddock', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ collection, categories }),
-        });
-      } catch (e) {
-        console.error("Persistence Sync Failed:", e);
-      }
-    };
-
-    const debounceTimer = setTimeout(syncToBlob, 1500);
-    return () => clearTimeout(debounceTimer);
-  }, [collection, categories, isDataLoaded]);
 
   useEffect(() => {
 
@@ -607,39 +605,60 @@ export default function DiecastDashboard() {
   };
 
 
-  const handleAddEntry = () => {
+  const handleAddEntry = async () => {
      if(!newTitle || !newBrand) return;
+     if(!newImages.length && !isUploading) { alert("Missing Photo: Please upload at least one image."); return; }
      
-     const newId = collection.length > 0 ? Math.max(...collection.map(c => c.id)) + 1 : 1;
-     const entryImages = newImages.length > 0 ? newImages : [
-        "https://images.unsplash.com/photo-1603584173870-7f23fdae1b7a?q=80&w=800&auto=format&fit=crop"
-     ];
-
-     const newEntry: DiecastModel = {
-        id: newId,
-        title: newTitle,
-        scale: newScale,
-        manufacturer: newBrand,
-        description: newDesc || "No notes provided.",
-
-        dateAdded: new Date().toISOString().split('T')[0],
-        imageUrls: entryImages
-     };
-
-     setCollection([newEntry, ...collection]);
-     setIsAdding(false);
+     setIsUploading(true);
+     setNotification("Syncing with Cloud...");
      
-     setNewTitle('');
-     setNewBrand('');
-     setNewDesc('');
+     try {
+       const carData = { 
+          car_brand: newDesc || 'Standard', 
+          model_manufacturer: newBrand, 
+          scale: newScale, 
+          full_model_name: newTitle, 
+          image_url: newImages[0] 
+       };
 
-     setNewImages([]);
+       const response = await fetch('/api/paddock', { 
+          method: 'POST', 
+          headers: { 'Content-Type': 'application/json' }, 
+          body: JSON.stringify(carData) 
+       });
+
+       if (!response.ok) throw new Error("Sync Failed");
+
+       setNotification(`Entry Secured: ${newTitle}`);
+       refreshCollection();
+       
+       setIsAdding(false); 
+       setNewTitle(''); 
+       setNewBrand(''); 
+       setNewDesc(''); 
+       setNewImages([]);
+     } catch (err) { 
+       alert("Cloud Sync Interrupted."); 
+     } finally { 
+       setIsUploading(false); 
+     }
   };
 
-  const handleDeleteEntry = (id: number) => {
-     setCollection(prev => prev.filter(item => item.id !== id));
-     setExpandedItem(null);
+  const handleDeleteEntry = async (id: number) => {
+    try {
+      const response = await fetch('/api/paddock', { 
+        method: 'DELETE', 
+        headers: { 'Content-Type': 'application/json' }, 
+        body: JSON.stringify({ id }) 
+      });
+      if (response.ok) {
+        setNotification('Record Erased.');
+        refreshCollection();
+        setExpandedItem(null);
+      }
+    } catch (e) { alert('Delete Failed.'); }
   };
+
 
   const handleAddCategory = () => {
      const clean = newCatName.trim();
@@ -884,6 +903,12 @@ export default function DiecastDashboard() {
       
       {/* Universal Ambient Dark/Red Background for consistency across pages */}
       <AmbientBackground />
+
+      {notification && (
+        <div className="fixed top-24 left-1/2 -translate-x-1/2 z-[100] animate-in slide-in-from-top-10 duration-500">
+           <div className="bg-red-600 text-white px-8 py-4 rounded-2xl shadow-[0_0_40px_rgba(220,38,38,0.5)] font-black text-xs uppercase tracking-widest border border-red-400">{notification}</div>
+        </div>
+      )}
 
       {/* Expanded Modal Overlay */}
       {expandedItem && (
