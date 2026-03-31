@@ -33,21 +33,26 @@ export async function addCarToPaddock(formData: FormData) {
     });
     console.log(`Blob URL Received: ${blob.url}`);
 
-    // 3. Connection Resilience (500ms pool warm-up)
-    console.log('Warming Postgres Connection Pool...');
-    await new Promise(resolve => setTimeout(resolve, 500));
-    
-    // Force a warm connection
-    const client = await sql.connect();
-    console.log('Handshake Established.');
+    // 3. Environment & Connection Resilience
+    if (!process.env.POSTGRES_URL) {
+      console.error('Environment Fault: POSTGRES_URL missing');
+      return { error: 'Cloud Database credentials not found in Vercel. Please connect Postgres in Vercel Storage.' };
+    }
 
-    // 4. SQL Integrity: Permanent Insertion
-    console.log('Starting SQL Insert...');
-    const result = await client.sql`
+    if (!process.env.BLOB_READ_WRITE_TOKEN) {
+      console.error('Environment Fault: BLOB_READ_WRITE_TOKEN missing');
+      return { error: 'Cloud Image Store (Blob) not connected.' };
+    }
+
+    console.log('Postgres Pool Check: OK. Awaiting SQL Write...');
+    
+    // 4. SQL Integrity: Dedicated Insert
+    const result = await sql`
       INSERT INTO cars (car_brand, model_manufacturer, scale, full_model_name, image_url)
       VALUES (${carBrand}, ${modelManufacturer}, ${scale}, ${fullModelName}, ${blob.url})
       RETURNING id;
     `;
+
 
     if (!result || result.rowCount === 0) {
       throw new Error('Database Commit Fault: Row not created');
