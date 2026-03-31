@@ -640,19 +640,33 @@ export default function DiecastDashboard() {
 
 
   const handleDeleteEntry = async (id: number) => {
+    // 1. Snapshot for Rollback
+    const previousCollection = [...collection];
+    
+    // 2. Optimistic Update (Immediate Feedback)
+    setCollection(prev => prev.filter(item => item.id !== id));
+    setExpandedItem(null);
+    setNotification('Purging Record...');
+
     try {
       const response = await fetch('/api/paddock', { 
         method: 'DELETE', 
         headers: { 'Content-Type': 'application/json' }, 
         body: JSON.stringify({ id }) 
       });
-      if (response.ok) {
-        setNotification('Record Erased.');
-        refreshCollection();
-        setExpandedItem(null);
-      }
-    } catch (e) { alert('Delete Failed.'); }
+
+      if (!response.ok) throw new Error('Cloud Out of Sync');
+      
+      setNotification('Record Erased.');
+      // Final verified sync from DB
+      refreshCollection(); 
+    } catch (e) { 
+      // 3. Rollback on Failure
+      setCollection(previousCollection);
+      alert('Vault Override Failed: Record Restored.');
+    }
   };
+
 
 
   const handleAddCategory = () => {
