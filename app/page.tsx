@@ -88,6 +88,27 @@ const SearchIcon = () => (
   </svg>
 );
 
+const ImageWithPlaceholder = ({ src, alt, className, innerClassName = "w-full h-full object-cover" }: { src: string, alt: string, className?: string, innerClassName?: string }) => {
+  const [isLoaded, setIsLoaded] = useState(false);
+  
+  return (
+    <div className={`relative overflow-hidden bg-zinc-900/50 ${className}`}>
+      {!isLoaded && (
+        <div className="absolute inset-0 flex items-center justify-center bg-zinc-900/80 animate-pulse">
+           <div className="w-6 h-6 border-2 border-red-900/20 border-t-red-600 rounded-full animate-spin"></div>
+        </div>
+      )}
+      <img 
+        src={src} 
+        alt={alt}
+        onLoad={() => setIsLoaded(true)}
+        className={`${innerClassName} transition-all duration-700 ${isLoaded ? 'opacity-100 scale-100 blur-0' : 'opacity-0 scale-110 blur-2xl'}`}
+      />
+    </div>
+  );
+};
+
+
 
 // ==========================================
 // DATA & TYPES
@@ -528,7 +549,8 @@ export default function DiecastDashboard() {
       <div className="relative min-h-screen w-full bg-[#060202] overflow-hidden flex items-center justify-center font-sans tracking-tight">
         <AmbientBackground isIntro={true} />
 
-        <div className="relative z-10 flex flex-col md:flex-row items-center justify-between p-6 mt-10 max-w-7xl mx-auto w-full gap-12 md:gap-8">
+        <div className="relative z-10 flex flex-col md:flex-row items-center justify-between p-6 mt-10 max-w-[1600px] mx-auto w-full gap-12 md:gap-8">
+
           
           {/* Left Text Block */}
           <div className="flex flex-col items-start text-left max-w-xl flex-shrink-0 z-20">
@@ -745,10 +767,11 @@ export default function DiecastDashboard() {
 
       {/* Expanded Modal Overlay */}
       {expandedItem && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 md:p-8 font-sans">
-          <div className="absolute inset-0 bg-black/80 backdrop-blur-2xl transition-opacity animate-in fade-in" onClick={() => setExpandedItem(null)}></div>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 md:p-8 font-sans">
+          <div className="absolute inset-0 bg-black/90 backdrop-blur-3xl transition-opacity animate-in fade-in" onClick={() => setExpandedItem(null)}></div>
 
-          <div className="relative z-10 w-full h-full md:h-auto max-w-5xl md:max-h-[85vh] bg-zinc-950 rounded-3xl md:border border-zinc-800 shadow-2xl overflow-hidden flex flex-col md:flex-row group animate-in zoom-in-95 duration-200">
+          <div className="relative z-10 w-full h-[95vh] md:h-auto max-w-[1400px] md:max-h-[85vh] bg-zinc-950 rounded-[40px] md:border border-zinc-800 shadow-2xl overflow-hidden flex flex-col md:flex-row group animate-in zoom-in-95 duration-200">
+
             
             <button 
               onClick={() => setExpandedItem(null)}
@@ -758,14 +781,15 @@ export default function DiecastDashboard() {
             </button>
 
             {/* Left side: Images Area */}
-            <div className="w-full md:w-[45%] relative flex flex-col bg-zinc-950 border-b md:border-b-0 md:border-r border-zinc-800/80">
+            <div className="w-full md:w-[50%] lg:w-[60%] relative flex flex-col bg-zinc-950 border-b md:border-b-0 md:border-r border-zinc-800/80 aspect-video md:aspect-auto">
                 {/* Main Image */}
-                <div className="relative flex-grow min-h-[35vh] md:min-h-0 bg-[#080808] overflow-hidden rounded-t-3xl md:rounded-tr-none md:rounded-l-3xl">
-                  <img 
+                <div className="relative flex-grow min-h-[35vh] md:min-h-0 bg-[#080808] overflow-hidden rounded-t-[40px] md:rounded-tr-none md:rounded-l-[40px]">
+                  <ImageWithPlaceholder 
                     src={expandedItem.imageUrls[activeImageIndex]} 
                     alt={`${expandedItem.title} - View ${activeImageIndex + 1}`}
-                    className="w-full h-full object-cover transition-opacity duration-300 opacity-95"
+                    className="w-full h-full"
                   />
+
                   <div className="absolute top-5 left-5 font-mono text-[11px] text-zinc-300 bg-zinc-950/80 px-3 py-1.5 rounded-lg backdrop-blur-md flex items-center gap-1.5 z-10 shadow-lg border border-zinc-800">
                      IMG {activeImageIndex + 1}/{expandedItem.imageUrls.length}
                   </div>
@@ -795,19 +819,19 @@ export default function DiecastDashboard() {
                            &rarr;
                         </button>
                      </>
-                  )}
+                   )}
                 </div>
 
-                {/* Thumbnails strip */}
+                {/* Thumbnails */}
                 {expandedItem.imageUrls.length > 1 && (
-                  <div className="h-28 bg-zinc-950 border-t border-zinc-900 p-3 flex gap-3 overflow-x-auto hide-scrollbar flex-shrink-0 md:rounded-bl-3xl">
+                   <div className="absolute bottom-5 left-1/2 -translate-x-1/2 flex gap-2 z-30 max-w-[80%] overflow-x-auto hide-scrollbar p-2 bg-black/40 backdrop-blur-md rounded-2xl border border-white/5">
                     {expandedItem.imageUrls.map((url, i) => (
                       <button 
                         key={i}
                         onClick={() => setActiveImageIndex(i)}
-                        className={`relative aspect-[4/3] flex-shrink-0 border-2 rounded-xl overflow-hidden transition-all ${i === activeImageIndex ? 'border-red-500 opacity-100' : 'border-transparent opacity-50 hover:opacity-100'}`}
+                        className={`relative w-12 h-12 md:w-16 md:h-16 rounded-xl overflow-hidden border-2 transition-all flex-shrink-0 ${activeImageIndex === i ? 'border-red-600 scale-105 shadow-lg' : 'border-transparent opacity-40 hover:opacity-100'}`}
                       >
-                         <img src={url} alt={`Thumb ${i}`} className="w-full h-full object-cover" />
+                         <ImageWithPlaceholder src={url} alt={`Thumb ${i}`} className="w-full h-full" />
                       </button>
                     ))}
                   </div>
@@ -815,7 +839,7 @@ export default function DiecastDashboard() {
             </div>
 
             {/* Right side: Content Scrollable */}
-            <div className="w-full md:w-[55%] flex flex-col h-full max-h-[50vh] md:max-h-[85vh] overflow-y-auto bg-zinc-950 p-8 md:p-10 hide-scrollbar">
+            <div className="w-full md:w-[50%] lg:w-[40%] flex flex-col h-full overflow-y-auto bg-zinc-950 p-6 sm:p-8 md:p-12 hide-scrollbar">
                
                <div className="flex items-center gap-3 mb-5">
                   <div className="font-mono text-[10px] text-zinc-300 flex items-center gap-2 bg-zinc-900 px-3 py-1 rounded-md border border-zinc-800 shadow-inner">
@@ -866,7 +890,8 @@ export default function DiecastDashboard() {
       )}
 
       {/* Main Dashboard Layout */}
-      <div className="relative z-10 w-full mx-auto flex flex-col gap-8 min-h-[90vh] max-w-7xl">
+      <div className="relative z-10 w-full mx-auto flex flex-col gap-8 min-h-[90vh] max-w-[1600px]">
+
         
        {/* Top Navbar */}
         <header className="flex flex-col md:flex-row justify-between items-stretch md:items-center gap-4 md:gap-5 bg-zinc-950/80 p-3 sm:p-5 rounded-3xl border border-zinc-800/80 backdrop-blur-xl sticky top-2 sm:top-4 z-40 shadow-2xl">
@@ -921,15 +946,15 @@ export default function DiecastDashboard() {
 
         {/* Secondary Control Sub-header (Filters & Sorting) */}
         {!isAdding && (
-           <div className="flex flex-wrap items-center justify-between gap-3 md:gap-4 bg-zinc-950/40 p-2 rounded-2xl border border-zinc-900 backdrop-blur-md animate-in slide-in-from-top-2 duration-500 overflow-x-auto hide-scrollbar">
-              <div className="flex flex-nowrap md:flex-wrap items-center gap-2">
+           <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 bg-zinc-950/40 p-2 rounded-[28px] border border-zinc-900 backdrop-blur-md animate-in slide-in-from-top-2 duration-500">
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
                  {/* Brand Filter */}
-                 <div className="flex flex-shrink-0 items-center h-9 bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden">
-                    <span className="px-2 md:px-3 text-[9px] font-black text-red-600 uppercase tracking-widest border-r border-zinc-800 h-full flex items-center">Brand</span>
+                 <div className="flex items-center h-11 sm:h-9 bg-zinc-900 border border-zinc-800 rounded-2xl sm:rounded-xl overflow-hidden shadow-inner">
+                    <span className="px-3 text-[10px] sm:text-[9px] font-black text-red-600 uppercase tracking-widest border-r border-zinc-800 h-full flex items-center">Brand</span>
                     <select
                       value={filterBrand}
                       onChange={(e) => setFilterBrand(e.target.value)}
-                      className="bg-transparent border-none text-zinc-400 focus:ring-0 outline-none pl-2 pr-6 h-full cursor-pointer appearance-none font-bold text-[9px] md:text-[10px] uppercase tracking-wide"
+                      className="bg-transparent border-none text-zinc-300 sm:text-zinc-400 focus:ring-0 outline-none pl-3 pr-8 h-full cursor-pointer appearance-none font-black text-xs sm:text-[10px] uppercase tracking-wide flex-grow"
                     >
                       <option value="ALL">ALL</option>
                       {uniqueBrands.map(b => <option key={b} value={b}>{b}</option>)}
@@ -937,12 +962,12 @@ export default function DiecastDashboard() {
                  </div>
 
                  {/* Scale Filter */}
-                 <div className="flex flex-shrink-0 items-center h-9 bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden">
-                    <span className="px-2 md:px-3 text-[9px] font-black text-red-600 uppercase tracking-widest border-r border-zinc-800 h-full flex items-center">Scale</span>
+                 <div className="flex items-center h-11 sm:h-9 bg-zinc-900 border border-zinc-800 rounded-2xl sm:rounded-xl overflow-hidden shadow-inner">
+                    <span className="px-3 text-[10px] sm:text-[9px] font-black text-red-600 uppercase tracking-widest border-r border-zinc-800 h-full flex items-center">Scale</span>
                     <select
                       value={filterScale}
                       onChange={(e) => setFilterScale(e.target.value)}
-                      className="bg-transparent border-none text-zinc-400 focus:ring-0 outline-none pl-2 pr-6 h-full cursor-pointer appearance-none font-bold text-[9px] md:text-[10px] uppercase tracking-wide"
+                      className="bg-transparent border-none text-zinc-300 sm:text-zinc-400 focus:ring-0 outline-none pl-3 pr-8 h-full cursor-pointer appearance-none font-black text-xs sm:text-[10px] uppercase tracking-wide flex-grow"
                     >
                       <option value="ALL">ALL</option>
                       {uniqueScales.map(s => <option key={s} value={s}>{s}</option>)}
@@ -950,13 +975,12 @@ export default function DiecastDashboard() {
                  </div>
               </div>
 
-              <div className="flex items-center gap-0.5 h-9 bg-zinc-900 border border-zinc-800 rounded-xl px-0.5 flex-shrink-0">
-
+              <div className="flex items-center gap-1 h-11 sm:h-9 bg-zinc-900 border border-zinc-800 rounded-2xl sm:rounded-xl px-1">
                  {(['carbrand', 'recent', 'alphabetical', 'scale'] as const).map((mode) => (
                    <button
                      key={mode}
                      onClick={() => setSortBy(mode)}
-                     className={`h-7 px-3 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all ${sortBy === mode ? 'bg-red-600 text-white shadow-sm shadow-red-900' : 'text-zinc-500 hover:text-zinc-200 hover:bg-zinc-950'}`}
+                     className={`flex-1 sm:flex-none h-9 sm:h-7 px-4 rounded-xl sm:rounded-lg text-[10px] font-black uppercase tracking-widest transition-all ${sortBy === mode ? 'bg-red-600 text-white shadow-lg shadow-red-900/40' : 'text-zinc-500 hover:text-zinc-200 hover:bg-zinc-800'}`}
                    >
                      {mode === 'carbrand' ? 'GARAGE' : mode === 'alphabetical' ? 'A-Z' : mode === 'recent' ? 'NEW' : 'SIZE'}
                    </button>
@@ -1104,7 +1128,7 @@ export default function DiecastDashboard() {
           ) : (
             <>
                {sortBy === 'carbrand' && filterCarBrand === 'ALL' ? (
-                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 animate-in fade-in duration-500 mt-2">
+                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4 sm:gap-6 animate-in fade-in duration-500 mt-2">
                    {carStats.map(([slug, count]) => (
                      <div
                         key={slug}
@@ -1157,7 +1181,7 @@ export default function DiecastDashboard() {
                        </button>
                      </div>
                    )}
-                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 animate-in fade-in duration-500 mt-2">
+                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4 sm:gap-6 animate-in fade-in duration-500 mt-2">
                      {processedCollection.length === 0 ? (
                        <div className="col-span-full py-24 flex flex-col items-center justify-center text-center bg-zinc-950/60 rounded-[40px] border border-zinc-800 backdrop-blur-md">
                          <div className="w-16 h-16 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-500 mb-5 shadow-inner">
@@ -1167,57 +1191,50 @@ export default function DiecastDashboard() {
                          <p className="text-sm text-zinc-500 mt-2">Adjust your filters or add a new model.</p>
                        </div>
                      ) : processedCollection.map((item) => (
-                        <div
-                          key={item.id}
-                          className="rounded-[32px] p-[2px] transition-all duration-300 hover:-translate-y-1 cursor-pointer"
-                          style={{ 
-                            background: 'linear-gradient(to bottom, #ef4444, #991b1b)',
-                            boxShadow: '0 8px 30px rgba(0,0,0,0.6)'
-                          }}
-                        >
-                        <article 
-                          onClick={() => setExpandedItem(item)}
-                          className="group relative flex flex-col bg-zinc-950 rounded-[30px] overflow-hidden h-full cursor-pointer transition-colors backdrop-blur-md"
-                        >
-                         <div className="relative aspect-[4/3] bg-zinc-900 flex items-center justify-center overflow-hidden border-b border-zinc-800/50 group-hover:border-red-500/30 transition-colors">
-                           <img 
-                             src={item.imageUrls[0]} 
-                             alt={item.title} 
-                             className="w-full h-full object-cover scale-100 group-hover:scale-105 transition-transform duration-700 ease-out opacity-90 group-hover:opacity-100"
-                           />
-                           <div className="absolute inset-0 bg-gradient-to-t from-zinc-950/90 via-zinc-950/20 to-transparent z-10 pointer-events-none opacity-90"></div>
-                           <div className="absolute top-3 right-3 z-30 w-12 h-12 bg-zinc-200/95 rounded-xl p-2 shadow-lg border border-zinc-300/50 flex items-center justify-center opacity-95 group-hover:opacity-100 transition-transform group-hover:scale-110">
-                             <img 
-                               src={getBrandLogo(item.title)} 
-                               alt="Brand Logo" 
-                               className="w-full h-full object-contain filter contrast-125" 
-                               onError={(e) => { (e.currentTarget.parentNode as HTMLDivElement).style.display = 'none'; }}
-                             />
-                           </div>
-                           {item.imageUrls.length > 1 && (
-                             <div className="absolute top-3 left-3 z-20 flex items-center gap-1.5 bg-black/70 px-2 py-1 rounded-lg backdrop-blur-md shadow-lg border border-white/5">
-                               <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" className="text-zinc-300">
-                                 <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                               </svg>
-                               <span className="font-mono text-[10px] text-zinc-200">{item.imageUrls.length}</span>
-                             </div>
-                           )}
-                         </div>
-                         <div className="flex flex-col flex-grow p-5 z-10 -mt-8 pt-6">
-                           <h3 className="text-base sm:text-lg font-black tracking-tight text-white group-hover:text-red-400 transition-colors leading-tight mb-3 line-clamp-2 drop-shadow-md">
-                             {item.title}
-                           </h3>
-                           <div className="flex items-center justify-between w-full mt-auto">
-                             <span className="text-xs text-zinc-400 font-bold truncate pr-3 uppercase tracking-wider">
-                               {item.manufacturer}
-                             </span>
-                             <span className="px-2 py-1 text-[10px] font-black tracking-widest bg-zinc-800 text-zinc-200 rounded-lg border border-zinc-700 flex-shrink-0 shadow-inner">
-                               {item.scale}
-                             </span>
-                           </div>
-                         </div>
-                       </article>
+                    <div
+                      key={item.id}
+                      onClick={() => setExpandedItem(item)}
+                      className="group relative flex flex-col bg-zinc-950 rounded-[40px] overflow-hidden cursor-pointer transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_20px_50px_rgba(239,68,68,0.2)] border border-zinc-900 hover:border-red-600/30"
+                    >
+                      <div className="relative aspect-[4/3] overflow-hidden">
+                        <ImageWithPlaceholder 
+                          src={item.imageUrls[0]} 
+                          alt={item.title} 
+                          className="w-full h-full"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-transparent to-transparent opacity-60"></div>
+                        
+                        {/* Brand Logo Overlay */}
+                        <div className="absolute top-4 right-4 z-30 w-12 h-12 bg-white/95 rounded-2xl p-2.5 shadow-xl border border-white/20 flex items-center justify-center transition-transform group-hover:scale-110">
+                          <img 
+                            src={getBrandLogo(item.title)} 
+                            alt="Brand" 
+                            className="w-full h-full object-contain filter contrast-125" 
+                            onError={(e) => { (e.currentTarget.parentNode as HTMLDivElement).style.display = 'none'; }}
+                          />
                         </div>
+
+                        {item.imageUrls.length > 1 && (
+                          <div className="absolute top-4 left-4 z-20 flex items-center gap-1.5 bg-black/60 px-2.5 py-1.5 rounded-xl backdrop-blur-md border border-white/10">
+                            <span className="text-[10px] font-black text-white/90">{item.imageUrls.length} PHOTOS</span>
+                          </div>
+                        )}
+                      </div>
+
+                      <div className="flex flex-col p-6 pt-2">
+                        <h3 className="text-lg font-black tracking-tight text-white group-hover:text-red-500 transition-colors line-clamp-2 leading-tight mb-4">
+                          {item.title}
+                        </h3>
+                        <div className="flex items-center justify-between mt-auto">
+                          <span className="text-[10px] font-black text-zinc-500 uppercase tracking-[0.2em]">
+                            {item.manufacturer}
+                          </span>
+                          <span className="px-3 py-1 text-[10px] font-black tracking-tighter bg-red-600/10 text-red-500 rounded-lg border border-red-900/30">
+                            {item.scale}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
                      ))}
                    </div>
                  </>
