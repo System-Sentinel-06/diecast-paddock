@@ -1155,36 +1155,29 @@ export default function DiecastDashboard() {
 
 
           <div className="flex items-center gap-2 md:gap-4">
-             {/* Hide Registry on mobile dashboard to avoid clutter */}
-             <button 
-               onClick={() => setViewState('profile')}
-               className="hidden md:flex items-center justify-center gap-2.5 h-11 md:h-12 px-5 rounded-2xl bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-red-500 hover:border-red-950 transition-all font-black shadow-xl group"
-               title="Registry Configuration"
-             >
-               <SettingsIcon />
-               <span className="hidden lg:inline text-[9px] uppercase tracking-[0.2em] mt-0.5">Registry</span>
-             </button>
-
-             <button 
-               onClick={() => setIsAdding(!isAdding)}
-               className="flex-grow sm:flex-grow-0 flex items-center justify-center gap-2 rounded-2xl px-4 sm:px-6 h-11 md:h-12 text-[10px] md:text-[11px] font-black uppercase tracking-widest text-white bg-red-600 hover:bg-red-500 hover:shadow-[0_4px_20px_rgba(239,68,68,0.4)] transition-all shadow-xl"
-             >
-               {isAdding ? <CloseIcon /> : <PlusIcon />}
-               <span className="hidden sm:inline">{isAdding ? "CANCEL" : "ADD NEW"}</span>
-               <span className="inline sm:hidden">{isAdding ? "EXIT" : "LOG"}</span>
-             </button>
-
-             <div 
-               onClick={() => setViewState('profile')}
-               className="flex w-11 h-11 md:w-12 md:h-12 bg-zinc-900 border border-zinc-800 rounded-2xl items-center justify-center text-zinc-400 hover:text-white transition-all cursor-pointer group hover:border-red-700 shadow-xl"
-             >
-                <div className="w-5 h-5 transition-transform group-hover:scale-110">
-                  <TireIcon />
+              {/* Registry Access (Thematic Icon) */}
+              <button 
+                onClick={() => setViewState('profile')}
+                className="flex items-center justify-center gap-2.5 h-11 md:h-12 px-5 rounded-2xl bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-red-500 hover:border-red-950 transition-all font-black shadow-xl group"
+                title="Registry Configuration"
+              >
+                <div className="w-5 h-5 transition-transform group-hover:rotate-12">
+                   <TireIcon />
                 </div>
-             </div>
-          </div>
+                <span className="hidden lg:inline text-[9px] uppercase tracking-[0.2em] mt-0.5">Registry</span>
+              </button>
 
+              <button 
+                onClick={() => setIsAdding(!isAdding)}
+                className="flex-grow sm:flex-grow-0 flex items-center justify-center gap-2 rounded-2xl px-4 sm:px-6 h-11 md:h-12 text-[10px] md:text-[11px] font-black uppercase tracking-widest text-white bg-red-600 hover:bg-red-500 hover:shadow-[0_4px_20px_rgba(239,68,68,0.4)] transition-all shadow-xl"
+              >
+                {isAdding ? <CloseIcon /> : <PlusIcon />}
+                <span className="hidden sm:inline">{isAdding ? "CANCEL" : "ADD NEW"}</span>
+                <span className="inline sm:hidden">{isAdding ? "EXIT" : "LOG"}</span>
+              </button>
+          </div>
         </header>
+
 
 
         {/* Secondary Control Sub-header (Filters & Sorting) */}
