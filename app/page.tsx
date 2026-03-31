@@ -208,7 +208,45 @@ const initialMockCollection: DiecastModel[] = [];
 
 
 // ==========================================
+// LOADING ANIMATION
+// ==========================================
+const LoadingScreen = () => (
+   <div className="fixed inset-0 z-[999] bg-[#060202] flex flex-col items-center justify-center animate-in fade-in duration-700">
+      <div className="relative">
+         {/* Internal Glow Pulse */}
+         <div className="absolute inset-0 bg-red-600/20 blur-[80px] rounded-full animate-pulse"></div>
+         
+         {/* Animated Car Icon with driving effect */}
+         <div className="relative animate-bounce text-red-600 scale-[2.5] mb-12 drop-shadow-[0_0_15px_rgba(239,68,68,0.5)]">
+            <CarIcon />
+         </div>
+      </div>
+
+      <div className="flex flex-col items-center gap-4">
+         <span className="text-[10px] font-black text-white/50 tracking-[0.5em] uppercase animate-pulse">
+            Warming Engines
+         </span>
+         
+         {/* Racing Progress Bar */}
+         <div className="w-[180px] h-[2px] bg-zinc-900 rounded-full overflow-hidden relative border border-white/5">
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-red-600 to-transparent w-1/2 animate-[progress_1.5s_infinite_linear]"></div>
+         </div>
+      </div>
+
+      {/* Global Animation Styles */}
+      <style jsx global>{`
+        @keyframes progress {
+          0% { transform: translateX(-100%); }
+          100% { transform: translateX(200%); }
+        }
+      `}</style>
+   </div>
+);
+
+
+// ==========================================
 // SHARED BACKGROUND COMPONENT
+
 // ==========================================
 const AmbientBackground = ({ isIntro = false }: { isIntro?: boolean }) => (
   <div className="fixed inset-0 z-0 pointer-events-none bg-[#0a0202]">
@@ -849,11 +887,14 @@ export default function DiecastDashboard() {
     );
   }
 
+  if (!isDataLoaded) return <LoadingScreen />;
+
   // ==========================================
   // VIEW: DASHBOARD (MAIN)
   // ==========================================
   return (
     <div className="relative min-h-screen bg-[#060202] text-zinc-300 font-sans tracking-tight overflow-x-hidden p-2 sm:p-6">
+
       
       {/* Universal Ambient Dark/Red Background for consistency across pages */}
       <AmbientBackground />
