@@ -733,12 +733,6 @@ export default function DiecastDashboard() {
  
                   <div className="flex items-center gap-2 sm:gap-3">
                      <button 
-                        onClick={() => setViewState('dashboard')}
-                        className="flex items-center gap-2 px-4 h-10 sm:h-12 bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white rounded-xl sm:rounded-2xl transition-all font-black text-[10px] uppercase tracking-widest hidden sm:flex"
-                     >
-                        Inventory
-                     </button>
-                     <button 
                         onClick={() => setViewState('intro')}
                         className="flex-shrink-0 flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-xl sm:rounded-2xl bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white hover:bg-zinc-800 transition-all font-black"
                         title="Return to Home"
@@ -747,12 +741,13 @@ export default function DiecastDashboard() {
                      </button>
                      <button 
                         onClick={() => setViewState('dashboard')}
-                        className="flex-grow sm:flex-grow-0 flex items-center justify-center gap-2 h-10 sm:h-12 px-4 sm:px-6 bg-red-600 hover:bg-red-500 rounded-xl sm:rounded-2xl text-[10px] sm:text-xs font-black uppercase tracking-widest transition-all shadow-[0_4px_15px_rgba(239,68,68,0.3)] text-white"
+                        className="flex-grow sm:flex-grow-0 flex items-center justify-center gap-2 h-10 sm:h-12 px-5 sm:px-7 bg-red-600 hover:bg-red-500 rounded-xl sm:rounded-2xl text-[10px] sm:text-xs font-black uppercase tracking-widest transition-all shadow-[0_4px_15px_rgba(239,68,68,0.3)] text-white"
                      >
-                        <span className="hidden sm:inline">Enter Paddock</span>
+                        <span className="hidden sm:inline">Return to Paddock</span>
                         <span className="inline sm:hidden">Paddock</span>
                      </button>
                   </div>
+
 
            </header>
 
@@ -1123,9 +1118,10 @@ export default function DiecastDashboard() {
 
 
           <div className="flex items-center gap-2 md:gap-4">
+             {/* Hide Registry on mobile dashboard to avoid clutter */}
              <button 
                onClick={() => setViewState('profile')}
-               className="flex items-center justify-center gap-2.5 h-11 md:h-12 px-3 sm:px-5 rounded-2xl bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-red-500 hover:border-red-950 transition-all font-black shadow-xl group"
+               className="hidden md:flex items-center justify-center gap-2.5 h-11 md:h-12 px-5 rounded-2xl bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-red-500 hover:border-red-950 transition-all font-black shadow-xl group"
                title="Registry Configuration"
              >
                <SettingsIcon />
@@ -1134,22 +1130,23 @@ export default function DiecastDashboard() {
 
              <button 
                onClick={() => setIsAdding(!isAdding)}
-               className="flex items-center justify-center gap-2 rounded-2xl px-4 sm:px-6 h-11 md:h-12 text-[10px] md:text-[11px] font-black uppercase tracking-widest text-white bg-red-600 hover:bg-red-500 hover:shadow-[0_4px_20px_rgba(239,68,68,0.4)] transition-all shadow-xl"
+               className="flex-grow sm:flex-grow-0 flex items-center justify-center gap-2 rounded-2xl px-4 sm:px-6 h-11 md:h-12 text-[10px] md:text-[11px] font-black uppercase tracking-widest text-white bg-red-600 hover:bg-red-500 hover:shadow-[0_4px_20px_rgba(239,68,68,0.4)] transition-all shadow-xl"
              >
                {isAdding ? <CloseIcon /> : <PlusIcon />}
                <span className="hidden sm:inline">{isAdding ? "CANCEL" : "ADD NEW"}</span>
-               <span className="inline sm:hidden">{isAdding ? "" : "ADD"}</span>
+               <span className="inline sm:hidden">{isAdding ? "EXIT" : "LOG"}</span>
              </button>
 
              <div 
                onClick={() => setViewState('profile')}
-               className="hidden sm:flex w-11 h-11 md:w-12 md:h-12 bg-zinc-900 border border-zinc-800 rounded-2xl items-center justify-center text-zinc-400 hover:text-white transition-all cursor-pointer group hover:border-red-700 shadow-xl"
+               className="flex w-11 h-11 md:w-12 md:h-12 bg-zinc-900 border border-zinc-800 rounded-2xl items-center justify-center text-zinc-400 hover:text-white transition-all cursor-pointer group hover:border-red-700 shadow-xl"
              >
                 <div className="w-5 h-5 transition-transform group-hover:scale-110">
                   <UserIcon />
                 </div>
              </div>
           </div>
+
         </header>
 
 
