@@ -92,21 +92,25 @@ const ImageWithPlaceholder = ({ src, alt, className, innerClassName = "w-full h-
   const [isLoaded, setIsLoaded] = useState(false);
   
   return (
-    <div className={`relative overflow-hidden bg-zinc-900/50 ${className}`}>
-      {!isLoaded && (
-        <div className="absolute inset-0 flex items-center justify-center bg-zinc-900/80 animate-pulse">
-           <div className="w-6 h-6 border-2 border-red-900/20 border-t-red-600 rounded-full animate-spin"></div>
-        </div>
-      )}
+    <div className={`relative overflow-hidden bg-zinc-900 ${className}`}>
+      {/* Skeleton / Pulse Layer */}
+      <div className={`absolute inset-0 bg-zinc-900 transition-opacity duration-500 ${isLoaded ? 'opacity-0' : 'opacity-100'}`}>
+         <div className="w-full h-full bg-gradient-to-tr from-zinc-900 via-zinc-800 to-zinc-900 animate-pulse" />
+         <div className="absolute inset-0 flex items-center justify-center">
+            <div className="w-6 h-6 border-2 border-red-900/20 border-t-red-600 rounded-full animate-spin" />
+         </div>
+      </div>
+
       <img 
         src={src} 
         alt={alt}
         onLoad={() => setIsLoaded(true)}
-        className={`${innerClassName} transition-all duration-700 ${isLoaded ? 'opacity-100 scale-100 blur-0' : 'opacity-0 scale-110 blur-2xl'}`}
+        className={`${innerClassName} transition-all duration-1000 ease-out ${isLoaded ? 'opacity-100 scale-100 blur-0' : 'opacity-0 scale-110 blur-3xl'}`}
       />
     </div>
   );
 };
+
 
 
 
@@ -546,10 +550,12 @@ export default function DiecastDashboard() {
   // ==========================================
   if (viewState === 'intro') {
     return (
-      <div className="relative min-h-screen w-full bg-[#060202] overflow-hidden flex items-center justify-center font-sans tracking-tight">
+      <div className="relative h-[100dvh] w-full bg-[#060202] overflow-hidden flex items-center justify-center font-sans tracking-tight p-4">
         <AmbientBackground isIntro={true} />
 
-        <div className="relative z-10 flex flex-col md:flex-row items-center justify-between p-6 mt-10 max-w-[1600px] mx-auto w-full gap-12 md:gap-8">
+        <div className="relative z-10 flex flex-col md:flex-row items-center justify-between max-w-[1600px] mx-auto w-full gap-6 md:gap-12">
+
+
 
           
           {/* Left Text Block */}
@@ -603,87 +609,89 @@ export default function DiecastDashboard() {
         <div className="relative z-10 max-w-6xl mx-auto w-full animate-in slide-in-from-bottom-8 duration-500">
            
            {/* Profile Header */}
-           <header className="flex items-center justify-between bg-zinc-950/80 p-5 rounded-3xl border border-zinc-800/80 backdrop-blur-xl mb-10 shadow-2xl">
-              <div className="flex items-center gap-4">
-                 <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-red-600 to-orange-600 flex items-center justify-center shadow-[0_0_20px_rgba(239,68,68,0.4)] text-white">
+           <header className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between bg-zinc-950/80 p-4 sm:p-5 rounded-[32px] border border-zinc-800/80 backdrop-blur-xl mb-6 sm:mb-10 shadow-2xl gap-4">
+              <div className="flex items-center gap-3 sm:gap-4 group">
+                 <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-gradient-to-br from-red-600 to-orange-600 flex items-center justify-center shadow-[0_0_20px_rgba(239,68,68,0.4)] text-white transition-transform group-hover:rotate-12">
                     <TireIcon />
                  </div>
-
-                  <div>
-                      <h1 className="text-3xl font-black text-white tracking-tight">Pranav S&apos;s Collection</h1>
-                      <p className="text-sm font-mono text-zinc-400">Diecast Collection Stats</p>
+ 
+                  <div className="overflow-hidden">
+                      <h1 className="text-xl sm:text-3xl font-black text-white tracking-tight truncate">Garage Pulse</h1>
+                      <p className="text-[10px] sm:text-xs font-mono text-zinc-500 uppercase tracking-widest">Diecast Analytics</p>
                   </div>
               </div>
-
-              <div className="flex items-center gap-3">
+ 
+              <div className="flex items-center gap-2 sm:gap-3">
                  <button 
                     onClick={() => setViewState('intro')}
-                    className="flex h-12 w-12 items-center justify-center rounded-2xl bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors shadow-md"
+                    className="flex-shrink-0 flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-xl sm:rounded-2xl bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white hover:bg-zinc-800 transition-all"
                     title="Return to Home"
                  >
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
                  </button>
                  <button 
                     onClick={() => setViewState('dashboard')}
-                    className="flex items-center gap-2 h-12 px-6 bg-red-600 hover:bg-red-500 rounded-2xl text-sm font-bold uppercase transition-all shadow-[0_4px_15px_rgba(239,68,68,0.3)] text-white"
+                    className="flex-grow sm:flex-grow-0 flex items-center justify-center gap-2 h-10 sm:h-12 px-4 sm:px-6 bg-red-600 hover:bg-red-500 rounded-xl sm:rounded-2xl text-[10px] sm:text-xs font-black uppercase tracking-widest transition-all shadow-[0_4px_15px_rgba(239,68,68,0.3)] text-white"
                  >
-                    Return to Paddock
+                    <span className="sm:inline">Enter Paddock</span>
+                    <span className="inline sm:hidden">Paddock</span>
                  </button>
               </div>
            </header>
 
-           <div className="flex flex-col lg:flex-row gap-8 mb-10 items-stretch">
-              
-              {/* Pillar 1: Total & Scale */}
-              <div className="w-full lg:w-1/3 flex flex-col gap-6">
-                 {/* Main Stat */}
-                 <div className="bg-zinc-950/80 border border-zinc-800/80 rounded-3xl p-8 backdrop-blur-xl shadow-2xl relative overflow-hidden group flex-shrink-0">
-                    <div className="absolute -right-10 -top-10 w-40 h-40 bg-red-600/10 blur-[40px] rounded-full group-hover:bg-red-600/20 transition-all"></div>
-                    <h3 className="text-sm font-bold text-zinc-500 uppercase tracking-widest mb-2">Total Collection</h3>
-                    <p className="text-7xl font-black text-transparent bg-clip-text bg-gradient-to-b from-white to-zinc-500 drop-shadow-lg">
-                       {collection.length}
-                    </p>
-                    <p className="text-sm text-zinc-400 mt-2 font-mono">Logged Models</p>
-                 </div>
 
-                 {/* Scale stats */}
-                 <div className="bg-zinc-950/80 border border-zinc-800/80 rounded-3xl p-8 backdrop-blur-xl shadow-2xl flex-grow overflow-y-auto hide-scrollbar max-h-[400px]">
-                    <h4 className="text-xs font-bold text-zinc-600 uppercase tracking-wider mb-4">By Scale Dimension</h4>
-                    {scaleStats.length > 0 ? (
-                       <div className="flex flex-wrap gap-3">
-                          {scaleStats.map(([scale, count]) => (
-                             <div key={scale} className="bg-zinc-900 border border-zinc-700 px-3 py-1.5 rounded-xl flex items-center gap-2 shadow-sm">
-                                <span className="font-bold text-zinc-300 text-sm">{scale}</span>
-                                <span className="text-orange-400 font-mono text-xs font-bold bg-zinc-950 px-2 py-0.5 rounded shadow-inner">{count}</span>
-                             </div>
-                          ))}
-                       </div>
-                    ) : (
-                       <p className="text-sm text-zinc-500 italic">No models logged yet.</p>
-                    )}
-                 </div>
-              </div>
+            <div className="flex flex-col lg:flex-row gap-8 mb-10 items-stretch">
+               
+               {/* Pillar 1: Total & Scale */}
+               <div className="w-full lg:w-1/3 flex flex-col gap-4 sm:gap-6">
+                  {/* Main Stat */}
+                  <div className="bg-zinc-950/80 border border-zinc-800/80 rounded-[32px] p-6 sm:p-8 backdrop-blur-xl shadow-2xl relative overflow-hidden group flex-shrink-0">
+                     <div className="absolute -right-10 -top-10 w-40 h-40 bg-red-600/10 blur-[40px] rounded-full group-hover:bg-red-600/20 transition-all"></div>
+                     <h3 className="text-[10px] sm:text-xs font-black text-zinc-500 uppercase tracking-widest mb-2">Total Registry</h3>
+                     <p className="text-6xl sm:text-7xl font-black text-transparent bg-clip-text bg-gradient-to-b from-white to-zinc-500 drop-shadow-lg leading-none">
+                        {collection.length}
+                     </p>
+                     <p className="text-[10px] text-zinc-500 mt-2 font-mono uppercase tracking-[0.2em]">Verified Units</p>
+                  </div>
 
-              {/* Pillar 2: Diecast Manufacturer Stats */}
-              <div className="w-full lg:w-1/3 flex flex-col">
-                 <div className="bg-zinc-950/80 border border-zinc-800/80 rounded-3xl p-8 backdrop-blur-xl shadow-2xl flex-grow overflow-y-auto hide-scrollbar max-h-[600px]">
-                    <h4 className="text-xs font-bold text-zinc-600 uppercase tracking-wider mb-4">By Diecast Manufacturer</h4>
-                    {brandStats.length > 0 ? (
-                       <div className="flex flex-col gap-4">
-                          {brandStats.map(([brand, count]) => (
-                             <div key={brand} className="flex items-center justify-between border-b border-zinc-800/50 pb-3">
-                                <span className="text-base font-bold text-zinc-200">{brand}</span>
-                                <span className="bg-zinc-900 border border-zinc-700 font-mono text-sm text-red-400 px-3 py-1 rounded-xl shadow-inner font-bold">
-                                   {count}
-                                </span>
-                             </div>
-                          ))}
-                       </div>
-                    ) : (
-                       <p className="text-sm text-zinc-500 italic">No models logged yet.</p>
-                    )}
-                 </div>
-              </div>
+                  {/* Scale stats */}
+                  <div className="bg-zinc-950/80 border border-zinc-800/80 rounded-[32px] p-6 sm:p-8 backdrop-blur-xl shadow-2xl flex-grow overflow-y-auto hide-scrollbar max-h-[300px] sm:max-h-[400px]">
+                     <h4 className="text-[10px] font-black text-zinc-600 uppercase tracking-widest mb-4">Registry by Scale</h4>
+                     {scaleStats.length > 0 ? (
+                        <div className="flex flex-wrap gap-2">
+                           {scaleStats.map(([scale, count]) => (
+                              <div key={scale} className="bg-zinc-900/50 border border-zinc-800 px-3 py-2 rounded-xl flex items-center gap-3">
+                                 <span className="font-black text-zinc-400 text-[10px] tracking-widest">{scale}</span>
+                                 <span className="text-red-500 font-mono text-xs font-black bg-black/60 px-2.5 py-1 rounded-lg border border-red-900/20">{count}</span>
+                              </div>
+                           ))}
+                        </div>
+                     ) : (
+                        <p className="text-[10px] text-zinc-600 font-black uppercase tracking-widest italic opacity-50">Empty Garage</p>
+                     )}
+                  </div>
+               </div>
+
+               {/* Pillar 2: Diecast Manufacturer Stats */}
+               <div className="w-full lg:w-1/3 flex flex-col">
+                  <div className="bg-zinc-950/80 border border-zinc-800/80 rounded-[32px] p-6 sm:p-8 backdrop-blur-xl shadow-2xl flex-grow overflow-y-auto hide-scrollbar max-h-[500px] sm:max-h-[600px]">
+                     <h4 className="text-[10px] font-black text-zinc-600 uppercase tracking-widest mb-4">Casting Manufacturers</h4>
+                     {brandStats.length > 0 ? (
+                        <div className="flex flex-col gap-3">
+                           {brandStats.map(([brand, count]) => (
+                              <div key={brand} className="flex items-center justify-between border-b border-zinc-900 pb-2.5">
+                                 <span className="text-xs font-black text-zinc-300 uppercase tracking-widest truncate pr-4">{brand}</span>
+                                 <span className="bg-black/60 border border-white/5 font-mono text-xs text-red-500 px-3 py-1.5 rounded-lg shadow-inner font-black">
+                                    {count}
+                                 </span>
+                              </div>
+                           ))}
+                        </div>
+                     ) : (
+                        <p className="text-[10px] text-zinc-600 font-black uppercase tracking-widest italic opacity-50">No Data</p>
+                     )}
+                  </div>
+               </div>
 
               {/* Pillar 3: Car Brand Stats */}
               <div className="w-full lg:w-1/3 flex flex-col">
@@ -760,7 +768,7 @@ export default function DiecastDashboard() {
   // VIEW: DASHBOARD (MAIN)
   // ==========================================
   return (
-    <div className="relative min-h-screen bg-[#060202] text-zinc-300 font-sans tracking-tight overflow-x-hidden p-3 md:p-6">
+    <div className="relative min-h-screen bg-[#060202] text-zinc-300 font-sans tracking-tight overflow-x-hidden p-2 sm:p-6">
       
       {/* Universal Ambient Dark/Red Background for consistency across pages */}
       <AmbientBackground />
@@ -770,8 +778,7 @@ export default function DiecastDashboard() {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 md:p-8 font-sans">
           <div className="absolute inset-0 bg-black/90 backdrop-blur-3xl transition-opacity animate-in fade-in" onClick={() => setExpandedItem(null)}></div>
 
-          <div className="relative z-10 w-full h-[95vh] md:h-auto max-w-[1400px] md:max-h-[85vh] bg-zinc-950 rounded-[40px] md:border border-zinc-800 shadow-2xl overflow-hidden flex flex-col md:flex-row group animate-in zoom-in-95 duration-200">
-
+          <div className="relative z-10 w-full h-[95vh] md:h-auto max-w-[1400px] md:max-h-[85vh] bg-zinc-950 rounded-[40px] md:border border-zinc-800 shadow-2xl overflow-hidden flex flex-col group animate-in zoom-in-95 duration-200">
             
             <button 
               onClick={() => setExpandedItem(null)}
@@ -780,22 +787,20 @@ export default function DiecastDashboard() {
               <CloseIcon />
             </button>
 
-            {/* Left side: Images Area */}
-            <div className="w-full md:w-[50%] lg:w-[60%] relative flex flex-col bg-zinc-950 border-b md:border-b-0 md:border-r border-zinc-800/80 aspect-video md:aspect-auto">
-                {/* Main Image */}
-                <div className="relative flex-grow min-h-[35vh] md:min-h-0 bg-[#080808] overflow-hidden rounded-t-[40px] md:rounded-tr-none md:rounded-l-[40px]">
+            {/* MOBILE ONLY VIEW */}
+            <div className="flex md:hidden flex-col h-full overflow-hidden">
+               {/* Main Image (Mobile) */}
+               <div className="relative h-[45vh] bg-black overflow-hidden flex-shrink-0">
                   <ImageWithPlaceholder 
                     src={expandedItem.imageUrls[activeImageIndex]} 
-                    alt={`${expandedItem.title} - View ${activeImageIndex + 1}`}
+                    alt={expandedItem.title}
                     className="w-full h-full"
                   />
-
-                  <div className="absolute top-5 left-5 font-mono text-[11px] text-zinc-300 bg-zinc-950/80 px-3 py-1.5 rounded-lg backdrop-blur-md flex items-center gap-1.5 z-10 shadow-lg border border-zinc-800">
+                  <div className="absolute top-4 left-4 z-10 px-3 py-1.5 bg-black/60 backdrop-blur-md rounded-xl border border-white/10 text-[10px] font-black text-white uppercase tracking-widest">
                      IMG {activeImageIndex + 1}/{expandedItem.imageUrls.length}
                   </div>
-                  
-                  {/* Expanded Logo */}
-                  <div className="absolute bottom-5 right-5 z-30 w-20 h-20 bg-white rounded-2xl p-4 shadow-2xl border border-white/20 flex items-center justify-center opacity-95 hover:opacity-100 transition-transform hover:scale-105">
+                  {/* Floating Brand Logo */}
+                  <div className="absolute bottom-4 right-4 z-20 w-16 h-16 bg-white/95 rounded-2xl p-3 shadow-2xl flex items-center justify-center">
                      <img 
                         src={getBrandLogo(expandedItem.title)} 
                         alt="Logo" 
@@ -803,91 +808,128 @@ export default function DiecastDashboard() {
                         onError={(e) => { (e.currentTarget.parentNode as HTMLDivElement).style.display = 'none'; }}
                      />
                   </div>
+               </div>
 
-                  {expandedItem.imageUrls.length > 1 && (
-                     <>
-                        <button 
-                          onClick={(e) => { e.stopPropagation(); setActiveImageIndex((prev) => (prev - 1 + expandedItem.imageUrls.length) % expandedItem.imageUrls.length); }}
-                          className="absolute left-4 top-1/2 -translate-y-1/2 p-3 rounded-2xl bg-black/60 text-white hover:bg-red-600 backdrop-blur-md border border-white/10 transition-all opacity-0 group-hover:opacity-100 shadow-lg"
-                        >
-                           &larr;
-                        </button>
-                        <button 
-                          onClick={(e) => { e.stopPropagation(); setActiveImageIndex((prev) => (prev + 1) % expandedItem.imageUrls.length); }}
-                          className="absolute right-4 top-1/2 -translate-y-1/2 p-3 rounded-2xl bg-black/60 text-white hover:bg-red-600 backdrop-blur-md border border-white/10 transition-all opacity-0 group-hover:opacity-100 shadow-lg"
-                        >
-                           &rarr;
-                        </button>
-                     </>
-                   )}
-                </div>
-
-                {/* Thumbnails */}
-                {expandedItem.imageUrls.length > 1 && (
-                   <div className="absolute bottom-5 left-1/2 -translate-x-1/2 flex gap-2 z-30 max-w-[80%] overflow-x-auto hide-scrollbar p-2 bg-black/40 backdrop-blur-md rounded-2xl border border-white/5">
-                    {expandedItem.imageUrls.map((url, i) => (
-                      <button 
-                        key={i}
-                        onClick={() => setActiveImageIndex(i)}
-                        className={`relative w-12 h-12 md:w-16 md:h-16 rounded-xl overflow-hidden border-2 transition-all flex-shrink-0 ${activeImageIndex === i ? 'border-red-600 scale-105 shadow-lg' : 'border-transparent opacity-40 hover:opacity-100'}`}
-                      >
-                         <ImageWithPlaceholder src={url} alt={`Thumb ${i}`} className="w-full h-full" />
-                      </button>
-                    ))}
+               {/* Content (Mobile) Scrollable */}
+               <div className="flex flex-col flex-grow overflow-y-auto bg-zinc-950 p-6 pt-8 rounded-t-[40px] -mt-10 relative z-20 shadow-[0_-20px_40px_rgba(0,0,0,0.8)] border-t border-zinc-800/50">
+                  <div className="flex items-center gap-3 mb-6">
+                     <span className="px-3 py-1 bg-zinc-900 border border-zinc-800 text-[10px] font-black tracking-widest text-zinc-500 rounded-lg">MODEL REF: {expandedItem.id}</span>
+                     <span className="px-3 py-1 bg-red-950/20 border border-red-900/40 text-[10px] font-black tracking-widest text-red-500 rounded-lg">{expandedItem.scale}</span>
                   </div>
-                )}
+
+                  <h2 className="text-3xl font-black text-white leading-tight mb-6">{expandedItem.title}</h2>
+                  <p className="text-sm font-black text-zinc-500 uppercase tracking-widest mb-2">Diecast Manufacturer</p>
+                  <p className="text-lg font-black text-zinc-300 border-b border-zinc-900 pb-6 mb-6">{expandedItem.manufacturer}</p>
+
+                  <p className="text-[10px] font-black text-zinc-600 uppercase tracking-widest mb-3">Observation Logs</p>
+                  <div className="text-zinc-400 text-sm leading-relaxed mb-8 bg-zinc-900/30 p-5 rounded-2xl border border-zinc-900 line-clamp-none whitespace-pre-wrap">
+                     {expandedItem.description || "N/A"}
+                  </div>
+
+                  <div className="mt-auto pt-6 border-t border-zinc-900 flex flex-col gap-4">
+                     {expandedItem.imageUrls.length > 1 && (
+                        <div className="flex gap-2 overflow-x-auto hide-scrollbar pb-2">
+                           {expandedItem.imageUrls.map((url, i) => (
+                              <button 
+                                 key={i} 
+                                 onClick={() => setActiveImageIndex(i)}
+                                 className={`w-16 h-16 rounded-xl flex-shrink-0 overflow-hidden border-2 transition-all ${activeImageIndex === i ? 'border-red-600' : 'border-transparent opacity-40'}`}
+                              >
+                                 <ImageWithPlaceholder src={url} alt={`t-${i}`} className="w-full h-full" />
+                              </button>
+                           ))}
+                        </div>
+                     )}
+                     <button 
+                        onClick={() => handleDeleteEntry(expandedItem.id)}
+                        className="w-full py-4 bg-zinc-900 hover:bg-red-600 text-[10px] font-black text-zinc-500 hover:text-white border border-zinc-800 rounded-2xl tracking-widest uppercase transition-all flex items-center justify-center gap-3"
+                     >
+                        <TrashIcon /> Delete Registry
+                     </button>
+                  </div>
+               </div>
             </div>
 
-            {/* Right side: Content Scrollable */}
-            <div className="w-full md:w-[50%] lg:w-[40%] flex flex-col h-full overflow-y-auto bg-zinc-950 p-6 sm:p-8 md:p-12 hide-scrollbar">
-               
-               <div className="flex items-center gap-3 mb-5">
-                  <div className="font-mono text-[10px] text-zinc-300 flex items-center gap-2 bg-zinc-900 px-3 py-1 rounded-md border border-zinc-800 shadow-inner">
-                     <span className="w-2 h-2 rounded-full bg-red-600"></span>
-                     ID:{expandedItem.id.toString().padStart(4, '0')}
-                  </div>
-                  <div className="font-mono text-[10px] text-zinc-400 bg-zinc-900 px-3 py-1 rounded-md border border-zinc-800 shadow-inner">
-                     {expandedItem.dateAdded}
+            {/* DESKTOP ONLY VIEW */}
+            <div className="hidden md:flex flex-row h-full">
+               {/* Left side: Images (Desktop) */}
+               <div className="w-[55%] relative flex flex-col bg-zinc-950 border-r border-zinc-800/80">
+                  <div className="relative flex-grow bg-black overflow-hidden rounded-l-[40px]">
+                     <ImageWithPlaceholder 
+                       src={expandedItem.imageUrls[activeImageIndex]} 
+                       alt={expandedItem.title}
+                       className="w-full h-full"
+                     />
+                     <div className="absolute top-6 left-6 z-10 px-4 py-2 bg-black/60 backdrop-blur-md rounded-2xl border border-white/10 text-[11px] font-black text-white uppercase tracking-[0.2em]">
+                        Image Bundle / {activeImageIndex + 1} of {expandedItem.imageUrls.length}
+                     </div>
+                     
+                     {expandedItem.imageUrls.length > 1 && (
+                        <div className="absolute top-1/2 -translate-y-1/2 left-0 right-0 flex justify-between px-6 z-20 pointer-events-none">
+                           <button onClick={() => setActiveImageIndex(p => (p - 1 + expandedItem.imageUrls.length) % expandedItem.imageUrls.length)} className="pointer-events-auto p-4 bg-black/40 hover:bg-red-600 rounded-full backdrop-blur-xl border border-white/5 transition-all text-white">&larr;</button>
+                           <button onClick={() => setActiveImageIndex(p => (p + 1) % expandedItem.imageUrls.length)} className="pointer-events-auto p-4 bg-black/40 hover:bg-red-600 rounded-full backdrop-blur-xl border border-white/5 transition-all text-white">&rarr;</button>
+                        </div>
+                     )}
+
+                     {/* Thumbnails Overlay (Desktop) */}
+                     {expandedItem.imageUrls.length > 1 && (
+                        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-3 p-2.5 bg-black/40 backdrop-blur-3xl rounded-[24px] border border-white/5 max-w-[80%] overflow-x-auto hide-scrollbar">
+                           {expandedItem.imageUrls.map((url, i) => (
+                              <button 
+                                 key={i}
+                                 onClick={() => setActiveImageIndex(i)}
+                                 className={`w-16 h-16 rounded-xl overflow-hidden border-2 transition-all flex-shrink-0 ${activeImageIndex === i ? 'border-red-600 scale-105' : 'border-transparent opacity-50 hover:opacity-100'}`}
+                              >
+                                 <ImageWithPlaceholder src={url} alt={`th-${i}`} className="w-full h-full" />
+                              </button>
+                           ))}
+                        </div>
+                     )}
                   </div>
                </div>
 
-               <h2 className="text-3xl md:text-5xl font-black tracking-tight text-white mb-8 leading-tight pr-10">
-                 {expandedItem.title}
-               </h2>
-
-               <div className="flex flex-col sm:flex-row gap-4 mb-6 pb-6 border-b border-zinc-900">
-                  <div className="flex flex-col gap-1 p-4 bg-zinc-900/50 rounded-2xl border border-zinc-800/50 flex-grow">
-                    <span className="font-mono text-[11px] text-zinc-500 uppercase tracking-widest pl-1">Manufacturer</span>
-                    <span className="font-bold text-lg text-zinc-100">{expandedItem.manufacturer}</span>
+               {/* Right side: Content (Desktop) */}
+               <div className="w-[45%] flex flex-col h-full overflow-y-auto bg-zinc-950 p-12 hide-scrollbar">
+                  <div className="flex items-center justify-between mb-8">
+                     <span className="px-4 py-1.5 bg-zinc-900 border border-zinc-800 text-[10px] font-black text-zinc-500 rounded-xl tracking-tighter">SERIAL_{expandedItem.id.toString().padStart(5, '0')}</span>
+                     <img 
+                        src={getBrandLogo(expandedItem.title)} 
+                        alt="Logo" 
+                        className="h-10 w-auto object-contain bg-white rounded-lg p-1.5" 
+                        onError={(e) => { (e.currentTarget.parentNode as HTMLDivElement).style.display = 'none'; }}
+                     />
                   </div>
-                  <div className="flex flex-col gap-1 p-4 bg-orange-950/20 rounded-2xl border border-orange-900/30 flex-grow sm:max-w-[150px]">
-                    <span className="font-mono text-[11px] text-orange-600/80 uppercase tracking-widest pl-1">Scale Dimension</span>
-                    <span className="font-bold text-xl text-orange-500">{expandedItem.scale}</span>
-                  </div>
-               </div>
 
-               <div className="flex flex-col gap-3 flex-grow mb-6">
-                  <h4 className="font-mono text-[11px] text-zinc-500 uppercase tracking-widest pl-1">
-                     Observation Notes
-                  </h4>
-                  <div className="text-zinc-300 text-base leading-relaxed p-5 bg-zinc-900/40 rounded-2xl border border-zinc-800/50">
-                     {expandedItem.description}
+                  <h2 className="text-5xl font-black text-white leading-tight mb-8 tracking-tighter">{expandedItem.title}</h2>
+                  
+                  <div className="grid grid-cols-2 gap-4 border-b border-zinc-900 pb-10 mb-10">
+                     <div className="p-6 bg-zinc-900/40 rounded-[32px] border border-zinc-800/40">
+                        <p className="text-[10px] font-black text-zinc-600 uppercase tracking-widest mb-1">Manufacturer</p>
+                        <p className="text-xl font-black text-zinc-200">{expandedItem.manufacturer}</p>
+                     </div>
+                     <div className="p-6 bg-zinc-900/40 rounded-[32px] border border-zinc-800/40">
+                        <p className="text-[10px] font-black text-zinc-600 uppercase tracking-widest mb-1">Scale Ratio</p>
+                        <p className="text-xl font-black text-red-500 tracking-tighter">{expandedItem.scale}</p>
+                     </div>
                   </div>
-               </div>
 
-               {/* Delete Action at the bottom */}
-               <div className="mt-6 pt-6 border-t border-zinc-900/80 flex justify-end">
-                  <button 
-                     onClick={() => handleDeleteEntry(expandedItem.id)}
-                     className="flex items-center gap-3 px-6 py-3 border border-red-900/50 bg-red-950/20 text-red-500 hover:bg-red-600 hover:text-white rounded-2xl text-sm font-bold uppercase transition-all shadow-md hover:shadow-[0_0_20px_rgba(239,68,68,0.3)]"
-                  >
-                     <TrashIcon /> Delete Registry
-                  </button>
+                  <div className="flex flex-col gap-4 mb-auto">
+                     <h4 className="text-[10px] font-black text-zinc-600 uppercase tracking-widest pl-1">Registry Documentation</h4>
+                     <p className="text-lg text-zinc-400 leading-relaxed font-medium bg-zinc-900/20 p-8 rounded-[32px] border border-zinc-900/50 italic">
+                        &quot;{expandedItem.description || "No documentation attached."}&quot;
+                     </p>
+                  </div>
+
+                  <div className="mt-12 flex justify-between items-center text-zinc-600 font-mono text-[10px] tracking-widest">
+                     <span>ADDED: {expandedItem.dateAdded}</span>
+                     <button onClick={() => handleDeleteEntry(expandedItem.id)} className="flex items-center gap-3 text-red-500 hover:text-white transition-all font-black uppercase tracking-widest"><TrashIcon /> Erase Record</button>
+                  </div>
                </div>
             </div>
           </div>
         </div>
       )}
+
 
       {/* Main Dashboard Layout */}
       <div className="relative z-10 w-full mx-auto flex flex-col gap-8 min-h-[90vh] max-w-[1600px]">
@@ -1128,7 +1170,7 @@ export default function DiecastDashboard() {
           ) : (
             <>
                {sortBy === 'carbrand' && filterCarBrand === 'ALL' ? (
-                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4 sm:gap-6 animate-in fade-in duration-500 mt-2">
+                 <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-3 sm:gap-6 animate-in fade-in duration-500 mt-2">
                    {carStats.map(([slug, count]) => (
                      <div
                         key={slug}
@@ -1181,7 +1223,7 @@ export default function DiecastDashboard() {
                        </button>
                      </div>
                    )}
-                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4 sm:gap-6 animate-in fade-in duration-500 mt-2">
+                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-3 sm:gap-6 animate-in fade-in duration-500 mt-2">
                      {processedCollection.length === 0 ? (
                        <div className="col-span-full py-24 flex flex-col items-center justify-center text-center bg-zinc-950/60 rounded-[40px] border border-zinc-800 backdrop-blur-md">
                          <div className="w-16 h-16 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-500 mb-5 shadow-inner">
