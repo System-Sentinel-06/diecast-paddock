@@ -374,10 +374,12 @@ export default function DiecastDashboard() {
   
   // App State Models
   const [collection, setCollection] = useState<DiecastModel[]>(initialMockCollection);
+  const [isDataLoaded, setIsDataLoaded] = useState(false);
   
   // App State Categories
   const [categories, setCategories] = useState<string[]>(INITIAL_CATEGORIES);
   const [newCatName, setNewCatName] = useState('');
+
 
   // Sorting & Filtering State
   const [sortBy, setSortBy] = useState<'recent' | 'alphabetical' | 'scale' | 'carbrand'>('carbrand');
@@ -481,7 +483,51 @@ export default function DiecastDashboard() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [expandedItem]);
 
+  // Vercel Blob Persistence: Load
   useEffect(() => {
+    async function loadData() {
+      try {
+        const response = await fetch('/api/paddock');
+        if (!response.ok) return;
+        const data = await response.json();
+        
+        if (data.collection && Array.isArray(data.collection)) {
+          setCollection(data.collection);
+        }
+        if (data.categories && Array.isArray(data.categories)) {
+          setCategories(data.categories);
+        }
+      } catch (e) {
+        console.error("Persistence Hydration Failed:", e);
+      } finally {
+        setIsDataLoaded(true);
+      }
+    }
+    loadData();
+  }, []);
+
+  // Vercel Blob Persistence: Save (Debounced)
+  useEffect(() => {
+    if (!isDataLoaded) return;
+
+    const syncToBlob = async () => {
+      try {
+        await fetch('/api/paddock', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ collection, categories }),
+        });
+      } catch (e) {
+        console.error("Persistence Sync Failed:", e);
+      }
+    };
+
+    const debounceTimer = setTimeout(syncToBlob, 1500);
+    return () => clearTimeout(debounceTimer);
+  }, [collection, categories, isDataLoaded]);
+
+  useEffect(() => {
+
     document.body.style.overflow = expandedItem ? 'hidden' : '';
   }, [expandedItem]);
 
