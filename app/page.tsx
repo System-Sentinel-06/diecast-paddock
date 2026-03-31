@@ -1067,8 +1067,8 @@ export default function DiecastDashboard() {
 
 
                {/* Right side: Content (Desktop) */}
-               <div className="w-[45%] flex flex-col h-full overflow-y-auto bg-zinc-950 p-12 hide-scrollbar">
-                  <div className="flex items-center justify-between mb-8">
+               <div className="w-[45%] flex flex-col h-full overflow-y-auto bg-zinc-950 p-12 items-center text-center hide-scrollbar">
+                  <div className="flex items-center justify-center gap-6 mb-8 w-full">
                      <span className="px-4 py-1.5 bg-zinc-900 border border-zinc-800 text-[10px] font-black text-zinc-500 rounded-xl tracking-tighter">SERIAL_{expandedItem.id.toString().padStart(5, '0')}</span>
                      <img 
                         src={getBrandLogo(expandedItem.title)} 
@@ -1078,9 +1078,9 @@ export default function DiecastDashboard() {
                      />
                   </div>
 
-                  <h2 className="text-5xl font-black text-white leading-tight mb-8 tracking-tighter">{expandedItem.title}</h2>
+                  <h2 className="text-5xl font-black text-white leading-tight mb-8 tracking-tighter w-full">{expandedItem.title}</h2>
                   
-                  <div className="grid grid-cols-2 gap-4 border-b border-zinc-900 pb-10 mb-10">
+                  <div className="grid grid-cols-2 gap-4 border-b border-zinc-900 pb-10 mb-10 w-full">
                      <div className="p-6 bg-zinc-900/40 rounded-[32px] border border-zinc-800/40">
                         <p className="text-[10px] font-black text-zinc-600 uppercase tracking-widest mb-1">Manufacturer</p>
                         <p className="text-xl font-black text-zinc-200">{expandedItem.manufacturer}</p>
@@ -1091,12 +1091,13 @@ export default function DiecastDashboard() {
                      </div>
                   </div>
 
-                  <div className="flex flex-col gap-4 mb-auto">
-                     <h4 className="text-[10px] font-black text-zinc-600 uppercase tracking-widest pl-1">Registry Documentation</h4>
+                  <div className="flex flex-col gap-4 mb-auto w-full">
+                     <h4 className="text-[10px] font-black text-zinc-600 uppercase tracking-widest">Registry Documentation</h4>
                      <p className="text-lg text-zinc-400 leading-relaxed font-medium bg-zinc-900/20 p-8 rounded-[32px] border border-zinc-900/50 italic">
                         &quot;{expandedItem.description || "No documentation attached."}&quot;
                      </p>
                   </div>
+
 
                   <div className="mt-12 flex justify-between items-center text-zinc-600 font-mono text-[10px] tracking-widest">
                      <span>ADDED: {expandedItem.dateAdded}</span>
@@ -1169,7 +1170,7 @@ export default function DiecastDashboard() {
                className="flex w-11 h-11 md:w-12 md:h-12 bg-zinc-900 border border-zinc-800 rounded-2xl items-center justify-center text-zinc-400 hover:text-white transition-all cursor-pointer group hover:border-red-700 shadow-xl"
              >
                 <div className="w-5 h-5 transition-transform group-hover:scale-110">
-                  <UserIcon />
+                  <TireIcon />
                 </div>
              </div>
           </div>
@@ -1415,7 +1416,7 @@ export default function DiecastDashboard() {
                        </button>
                      </div>
                    )}
-                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-3 sm:gap-6 animate-in fade-in duration-500 mt-2">
+                   <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-2 sm:gap-6 animate-in fade-in duration-500 mt-2">
                      {processedCollection.length === 0 ? (
                        <div className="col-span-full py-24 flex flex-col items-center justify-center text-center bg-zinc-950/60 rounded-[40px] border border-zinc-800 backdrop-blur-md">
                          <div className="w-16 h-16 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-500 mb-5 shadow-inner">
@@ -1428,7 +1429,7 @@ export default function DiecastDashboard() {
                     <div
                       key={item.id}
                       onClick={() => setExpandedItem(item)}
-                      className="group relative flex flex-col bg-zinc-950 rounded-[40px] overflow-hidden cursor-pointer transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_20px_50px_rgba(239,68,68,0.2)] border border-zinc-900 hover:border-red-600/30"
+                      className="group relative flex flex-col bg-zinc-950 rounded-[24px] sm:rounded-[40px] overflow-hidden cursor-pointer transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_20px_50px_rgba(239,68,68,0.2)] border border-zinc-900 hover:border-red-600/30"
                     >
                       <div className="relative aspect-[4/3] overflow-hidden">
                         <ImageWithPlaceholder 
@@ -1455,8 +1456,8 @@ export default function DiecastDashboard() {
                         )}
                       </div>
 
-                      <div className="flex flex-col p-6 pt-2">
-                        <h3 className="text-lg font-black tracking-tight text-white group-hover:text-red-500 transition-colors line-clamp-2 leading-tight mb-4">
+                      <div className="flex flex-col p-4 sm:p-6 pt-2">
+                        <h3 className="text-sm sm:text-lg font-black tracking-tight text-white group-hover:text-red-500 transition-colors line-clamp-2 leading-tight mb-2 sm:mb-4">
                           {item.title}
                         </h3>
                         <div className="flex items-center justify-between mt-auto">
