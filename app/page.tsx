@@ -390,9 +390,12 @@ export default function DiecastDashboard() {
       const q = searchQuery.toLowerCase();
       list = list.filter(i => 
         i.title.toLowerCase().includes(q) || 
-        i.manufacturer.toLowerCase().includes(q)
+        i.manufacturer.toLowerCase().includes(q) ||
+        i.scale.toLowerCase().includes(q) ||
+        i.description.toLowerCase().includes(q)
       );
     }
+
 
     if (filterBrand !== 'ALL') {
       list = list.filter(i => i.manufacturer === filterBrand);
@@ -559,12 +562,12 @@ export default function DiecastDashboard() {
 
           
           {/* Left Text Block */}
-          <div className="flex flex-col items-start text-left max-w-xl flex-shrink-0 z-20">
+          <div className="flex flex-col items-center md:items-start text-center md:text-left max-w-xl flex-shrink-0 z-20">
              <h1 className="text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-br from-white via-zinc-200 to-zinc-600 mb-4 sm:mb-6 drop-shadow-2xl">
                Diecast<br/><span className="text-red-600">Paddock</span>
              </h1>
 
-             <p className="text-zinc-400 font-sans text-base sm:text-lg md:text-xl leading-relaxed mb-8 sm:mb-10 max-w-md pr-4 font-medium drop-shadow-md border-l-2 border-red-600/40 pl-5">
+             <p className="text-zinc-500 font-sans text-sm sm:text-lg md:text-xl leading-relaxed mb-8 sm:mb-10 max-w-md md:pr-4 font-medium drop-shadow-md md:border-l-2 border-red-600/40 md:pl-5 mx-auto md:mx-0">
                 A definitive digital catalogue to maintain your precision scaled garage. Built for genuine diecast passion.
              </p>
 
@@ -575,6 +578,7 @@ export default function DiecastDashboard() {
                 <span className="relative z-10 flex items-center gap-3">Explore Collection <RightArrowIcon /></span>
              </button>
           </div>
+
 
 
           {/* Right Logo Block - Ultra Minimalist Design */}
@@ -715,30 +719,30 @@ export default function DiecastDashboard() {
               </div>
            </div>
 
-           {/* Brand Configuration Area */}
-           <div className="w-full bg-zinc-950/80 border border-zinc-800/80 rounded-3xl p-6 md:p-10 backdrop-blur-xl shadow-2xl flex flex-col mb-10">
-                  
-                 <div className="mb-8">
-                    <h3 className="text-xl font-black text-white mb-2">Registry Configuration</h3>
-                    <p className="text-zinc-400 text-base">Manage the dropdown list of accessible brands/categories when logging a new model.</p>
-                 </div>
+            {/* Brand Configuration Area */}
+            <div className="w-full bg-zinc-950/80 border border-zinc-800/80 rounded-[32px] p-5 sm:p-10 backdrop-blur-xl shadow-2xl flex flex-col mb-10">
+                   
+                  <div className="mb-8 font-sans">
+                     <h3 className="text-xl font-black text-white mb-2">Registry Configuration</h3>
+                     <p className="text-zinc-500 text-sm sm:text-base font-medium">Configure the brand database used for logging new precision units.</p>
+                  </div>
 
-                 <div className="flex items-center gap-4 mb-8 bg-zinc-900 p-3 rounded-2xl border border-zinc-800">
-                    <input 
-                       type="text"
-                       value={newCatName}
-                       onChange={(e) => setNewCatName(e.target.value)}
-                       placeholder="E.g. Jada Toys, M2 Machines..."
-                       className="flex-grow bg-transparent border-none outline-none px-4 py-2 text-base text-white placeholder-zinc-600"
-                    />
-                    <button 
-                       onClick={handleAddCategory}
-                       disabled={!newCatName.trim()}
-                       className="flex items-center gap-2 px-6 py-3 bg-red-600 hover:bg-red-500 text-white font-bold text-sm uppercase rounded-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-[0_4px_15px_rgba(239,68,68,0.3)]"
-                    >
-                       Add Brand
-                    </button>
-                 </div>
+                  <div className="flex flex-col sm:flex-row items-stretch gap-3 mb-8 bg-zinc-900/50 p-2 sm:p-3 rounded-2xl border border-zinc-800/50 transition-all focus-within:border-red-600/30">
+                     <input 
+                        type="text"
+                        value={newCatName}
+                        onChange={(e) => setNewCatName(e.target.value)}
+                        placeholder="E.g. Inno64, Liberty Walk..."
+                        className="flex-grow bg-transparent border-none outline-none px-4 py-3 sm:py-2 text-base text-white placeholder-zinc-700"
+                     />
+                     <button 
+                        onClick={handleAddCategory}
+                        disabled={!newCatName.trim()}
+                        className="flex items-center justify-center gap-2 px-6 h-12 sm:h-auto bg-red-600 hover:bg-red-500 text-white font-black text-[10px] uppercase rounded-xl transition-all disabled:opacity-30 disabled:cursor-not-allowed shadow-[0_4px_15px_rgba(239,68,68,0.3)] tracking-widest whitespace-nowrap"
+                     >
+                        Add to Database
+                     </button>
+                  </div>
 
                  <div className="flex-grow min-h-[400px]">
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[500px] overflow-y-auto hide-scrollbar pr-2">
