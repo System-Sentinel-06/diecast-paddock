@@ -681,7 +681,9 @@ export default function DiecastDashboard() {
       <div className="relative h-[100dvh] w-full bg-[#060202] overflow-hidden flex items-center justify-center font-sans tracking-tight p-4">
         <AmbientBackground isIntro={true} />
 
-        <div className="relative z-10 flex flex-col md:flex-row items-center justify-center max-w-[1600px] mx-auto w-full gap-12 md:gap-32">
+        <div className="relative z-10 flex flex-col md:flex-row items-center justify-end max-w-[1700px] mx-auto w-full gap-12 md:gap-40 md:pr-40">
+
+
 
 
 
