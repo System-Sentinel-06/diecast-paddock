@@ -770,9 +770,9 @@ export default function DiecastDashboard() {
                         onClick={() => setViewState('dashboard')}
                         className="flex-grow sm:flex-grow-0 flex items-center justify-center gap-2 h-10 sm:h-12 px-5 sm:px-7 bg-red-600 hover:bg-red-500 rounded-xl sm:rounded-2xl text-[10px] sm:text-xs font-black uppercase tracking-widest transition-all shadow-[0_4px_15px_rgba(239,68,68,0.3)] text-white"
                      >
-                        <span className="hidden sm:inline">Return to Paddock</span>
-                        <span className="inline sm:hidden">Paddock</span>
+                        <span>Paddock</span>
                      </button>
+
                   </div>
 
 
@@ -1173,7 +1173,8 @@ export default function DiecastDashboard() {
               >
                 {isAdding ? <CloseIcon /> : <PlusIcon />}
                 <span className="hidden sm:inline">{isAdding ? "CANCEL" : "ADD NEW"}</span>
-                <span className="inline sm:hidden">{isAdding ? "EXIT" : "LOG"}</span>
+                <span className="inline sm:hidden">{isAdding ? "EXIT" : "ADD NEW"}</span>
+
               </button>
           </div>
         </header>
