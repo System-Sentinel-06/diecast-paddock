@@ -20,10 +20,11 @@ export async function addCarToPaddock(formData: FormData) {
       return { error: 'Photographic Asset Required' };
     }
 
-    if (imageFile.size > 4 * 1024 * 1024) {
+    if (imageFile.size > 15 * 1024 * 1024) {
       console.error('File too large for Serverless Function');
-      return { error: 'File too large for Serverless Function (Max 4MB)' };
+      return { error: 'File too large for Registry (Max 15MB)' };
     }
+
 
     // 2. Vercel Blob Upload
     console.log('Starting Upload to Vercel Blob...');

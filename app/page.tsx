@@ -593,17 +593,24 @@ export default function DiecastDashboard() {
      }
      
      setIsUploading(true);
-     setNotification("Starting Cloud Sync Workflow...");
+     setNotification("Optimizing Image Asset...");
      
-     const formData = new FormData();
-     formData.append('car_brand', newDesc || 'Standard');
-     formData.append('model_manufacturer', newBrand);
-     formData.append('scale', newScale);
-     formData.append('full_model_name', newTitle);
-     formData.append('image_file', pendingFile);
-
      try {
+       // 1. Client-Side Compression to stay under 4.5MB Vercel Limit
+       const compressedBlob = await compressImage(pendingFile);
+       const finalFile = new File([compressedBlob], pendingFile.name, { type: 'image/jpeg' });
+
+       setNotification("Pushing to Cloud Vault...");
+       
+       const formData = new FormData();
+       formData.append('car_brand', newDesc || 'Standard');
+       formData.append('model_manufacturer', newBrand);
+       formData.append('scale', newScale);
+       formData.append('full_model_name', newTitle);
+       formData.append('image_file', finalFile);
+
        const result = await addCarToPaddock(formData);
+
 
        if (result?.error) {
           throw new Error(result.error);
