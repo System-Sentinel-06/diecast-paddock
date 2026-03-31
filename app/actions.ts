@@ -33,6 +33,8 @@ export async function addCarToPaddock(formData: FormData) {
       addRandomSuffix: true,
     });
     console.log(`Blob URL Received: ${blob.url}`);
+    console.log('New Blob URL:', blob.url);
+
 
     // 3. Environment & Connection Resilience
     if (!process.env.POSTGRES_URL) {
