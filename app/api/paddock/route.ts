@@ -24,6 +24,7 @@ export async function GET() {
     try { await sql`ALTER TABLE cars ADD COLUMN IF NOT EXISTS image_url TEXT;`; } catch(e) {}
     try { await sql`ALTER TABLE cars ADD COLUMN IF NOT EXISTS model_manufacturer TEXT;`; } catch(e) {}
     try { await sql`ALTER TABLE cars ADD COLUMN IF NOT EXISTS full_model_name TEXT;`; } catch(e) {}
+    try { await sql`ALTER TABLE cars ADD COLUMN IF NOT EXISTS blurhash TEXT;`; } catch(e) {}
 
     await sql`
       CREATE TABLE IF NOT EXISTS registry_models_list (
@@ -62,7 +63,8 @@ export async function GET() {
        manufacturer: r.model_manufacturer,
        description: r.car_brand, // Note: car_brand field is used to store user-provided 'Notes'
        dateAdded: new Date(r.date_added).toISOString().split('T')[0],
-       imageUrls: [r.image_url]
+       imageUrls: [r.image_url],
+       blurhash: r.blurhash
     }));
 
     return NextResponse.json({ collection, categories });
@@ -74,7 +76,7 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
-    const { car_brand, model_manufacturer, scale, full_model_name, image_url } = await request.json();
+    const { car_brand, model_manufacturer, scale, full_model_name, image_url, blurhash } = await request.json();
     
     if (!full_model_name || !model_manufacturer || !image_url) {
         return NextResponse.json({ error: 'Data Validation Fault: Mandatory Fields Missing' }, { status: 400 });
@@ -82,8 +84,8 @@ export async function POST(request: Request) {
 
     // 3. Commit to Postgres Cloud Stability
     await sql`
-      INSERT INTO cars (car_brand, model_manufacturer, scale, full_model_name, image_url)
-      VALUES (${car_brand}, ${model_manufacturer}, ${scale}, ${full_model_name}, ${image_url})
+      INSERT INTO cars (car_brand, model_manufacturer, scale, full_model_name, image_url, blurhash)
+      VALUES (${car_brand}, ${model_manufacturer}, ${scale}, ${full_model_name}, ${image_url}, ${blurhash})
     `;
 
     // Ensure model brand exists in registry_models_list

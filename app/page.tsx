@@ -2,6 +2,7 @@
 
 import React, { useState, useMemo, useEffect } from 'react';
 import Image from 'next/image';
+import { decode } from 'blurhash';
 import { addCarToPaddock, addBrandToRegistry, removeBrandFromRegistry, deleteCarFromPaddock } from '@/app/actions';
 
 // ==========================================
@@ -106,6 +107,30 @@ const SearchIcon = () => (
   </svg>
 );
 
+// ==========================================
+// BLURHASH DECODER
+// ==========================================
+const getBlurDataURL = (hash: string | null | undefined): string | undefined => {
+  if (!hash || typeof window === 'undefined') return undefined;
+  
+  try {
+    const pixels = decode(hash, 32, 32);
+    const canvas = document.createElement('canvas');
+    canvas.width = 32;
+    canvas.height = 32;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return undefined;
+    
+    const imageData = ctx.createImageData(32, 32);
+    imageData.data.set(pixels);
+    ctx.putImageData(imageData, 0, 0);
+    return canvas.toDataURL();
+  } catch (e) {
+    console.error("BlurHash Decode Error:", e);
+    return undefined;
+  }
+};
+
 const ImageWithPlaceholder = ({ 
   src, 
   alt, 
@@ -114,7 +139,7 @@ const ImageWithPlaceholder = ({
   priority = false, 
   sizes = "(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw",
   quality = 85,
-  blurDataURL = "data:image/webp;base64,UklGRjAAAABXRUJQVlA4ICQAAACyAgCdASoIAAgAAkA4JaACdAEAAKcAAP7/AAD++7u7u7u7AAA="
+  blurDataURL = ""
 }: { 
   src: string; 
   alt: string; 
@@ -127,10 +152,13 @@ const ImageWithPlaceholder = ({
 }) => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [error, setError] = useState(false);
+  
+  // Use generic fallback if no blurhash provided
+  const finalBlurDataURL = blurDataURL || "data:image/webp;base64,UklGRjAAAABXRUJQVlA4ICQAAACyAgCdASoIAAgAAkA4JaACdAEAAKcAAP7/AAD++7u7u7u7AAA=";
 
   // Reset loading state when source changes significantly
   useEffect(() => {
-    if (blurDataURL === "data:image/webp;base64,UklGRjAAAABXRUJQVlA4ICQAAACyAgCdASoIAAgAAkA4JaACdAEAAKcAAP7/AAD++7u7u7u7AAA=") {
+    if (!blurDataURL) {
        setIsLoaded(false);
     }
   }, [src]);
@@ -155,7 +183,7 @@ const ImageWithPlaceholder = ({
         priority={priority}
         quality={quality}
         placeholder="blur"
-        blurDataURL={blurDataURL}
+        blurDataURL={finalBlurDataURL}
         onLoad={() => setIsLoaded(true)}
         onError={() => setError(true)}
         className={`${innerClassName} transition-all duration-700 ease-out ${isLoaded ? 'opacity-100 scale-100' : 'opacity-0 scale-110'} contrast-[1.1] saturate-[1.1]`}
@@ -186,6 +214,7 @@ type DiecastModel = {
   dateAdded: string;
 
   imageUrls: string[];
+  blurhash?: string;
 };
 
 const initialMockCollection: DiecastModel[] = [];
@@ -970,7 +999,7 @@ export default function DiecastDashboard() {
                     innerClassName="w-full h-full object-contain"
                     quality={smartResolution ? 95 : 85}
                     sizes="100vw"
-                    blurDataURL={smartResolution ? expandedItem.imageUrls[activeImageIndex] : undefined}
+                    blurDataURL={getBlurDataURL(expandedItem.blurhash)}
                   />
                   
                   {/* Overlay Controls (Mobile) */}
@@ -1078,7 +1107,7 @@ export default function DiecastDashboard() {
                        innerClassName="w-full h-full object-contain"
                        quality={smartResolution ? 95 : 85}
                        sizes="60vw"
-                       blurDataURL={smartResolution ? expandedItem.imageUrls[activeImageIndex] : undefined}
+                       blurDataURL={getBlurDataURL(expandedItem.blurhash)}
                      />
                      
                      {/* Glassy Overlays (Desktop) */}
@@ -1506,6 +1535,7 @@ export default function DiecastDashboard() {
                           className="w-full h-full"
                           quality={smartResolution ? 20 : 85}
                           sizes="800px"
+                          blurDataURL={getBlurDataURL(item.blurhash)}
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-transparent to-transparent opacity-60"></div>
                         

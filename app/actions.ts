@@ -4,6 +4,7 @@ import { sql } from '@vercel/postgres';
 import { put } from '@vercel/blob';
 import { revalidatePath } from 'next/cache';
 import sharp from 'sharp';
+import { encode } from 'blurhash';
 
 export async function addCarToPaddock(formData: FormData) {
   try {
@@ -52,6 +53,16 @@ export async function addCarToPaddock(formData: FormData) {
       .webp({ quality: 80 })
       .toBuffer();
 
+    console.log('Generating Perceptual BlurHash...');
+    const { data: pixels, info: metadata } = await sharp(rawBuffer)
+      .raw()
+      .ensureAlpha()
+      .resize(32, 32, { fit: 'inside' })
+      .toBuffer({ resolveWithObject: true });
+    
+    const blurhash = encode(new Uint8ClampedArray(pixels), metadata.width, metadata.height, 4, 3);
+    console.log('BlurHash generated:', blurhash);
+
     console.log('Compression complete. Starting Upload to Vercel Blob...');
     
     // Purge the original extension, enforce .webp
@@ -79,8 +90,8 @@ export async function addCarToPaddock(formData: FormData) {
     
     // 4. SQL Integrity: Dedicated Insert
     const result = await sql`
-      INSERT INTO cars (car_brand, model_manufacturer, scale, full_model_name, image_url)
-      VALUES (${carBrand}, ${modelManufacturer}, ${scale}, ${fullModelName}, ${blob.url})
+      INSERT INTO cars (car_brand, model_manufacturer, scale, full_model_name, image_url, blurhash)
+      VALUES (${carBrand}, ${modelManufacturer}, ${scale}, ${fullModelName}, ${blob.url}, ${blurhash})
       RETURNING id;
     `;
 
