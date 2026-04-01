@@ -966,7 +966,6 @@ export default function DiecastDashboard() {
                {/* Content (Mobile) Scrollable */}
                <div className="flex flex-col flex-grow overflow-y-auto bg-zinc-950 p-6 pt-10 rounded-t-[44px] -mt-12 relative z-30 shadow-[0_-30px_60px_rgba(0,0,0,0.9)] border-t border-zinc-800/80">
                   <div className="flex items-center gap-3 mb-6">
-                     <span className="px-3 py-1 bg-zinc-900/80 border border-zinc-800 text-[9px] font-black tracking-widest text-zinc-500 rounded-lg">REG: {expandedItem.id.toString().padStart(4, '0')}</span>
                      <span className="px-3 py-1 bg-red-950/30 border border-red-900/50 text-[9px] font-black tracking-widest text-red-500 rounded-lg">{expandedItem.scale}</span>
                   </div>
 
@@ -1065,7 +1064,6 @@ export default function DiecastDashboard() {
                {/* Right side: Content (Desktop) */}
                <div className="w-[45%] flex flex-col h-full overflow-y-auto bg-zinc-950 p-12 items-center text-center hide-scrollbar">
                   <div className="flex items-center justify-center gap-6 mb-8 w-full border-b border-zinc-900 pb-8">
-                     <span className="px-4 py-1.5 bg-zinc-900 border border-zinc-800 text-[10px] font-black text-zinc-500 rounded-xl tracking-tighter shadow-inner">SERIAL_{expandedItem.id.toString().padStart(5, '0')}</span>
                      <img 
                         src={getBrandLogo(expandedItem.title)} 
                         alt="Logo" 
