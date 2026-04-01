@@ -526,7 +526,7 @@ export default function DiecastDashboard() {
   useEffect(() => {
     async function loadData() {
       try {
-        const response = await fetch('/api/paddock');
+        const response = await fetch(`/api/paddock?t=${Date.now()}`, { cache: 'no-store' });
         if (!response.ok) return;
         const data = await response.json();
         
@@ -552,7 +552,7 @@ export default function DiecastDashboard() {
   // Postgres Persistence: Refresh
   const refreshCollection = async () => {
     try {
-      const response = await fetch('/api/paddock');
+      const response = await fetch(`/api/paddock?t=${Date.now()}`, { cache: 'no-store' });
       const data = await response.json();
       if (data.collection) setCollection(data.collection);
     } catch (e) {
