@@ -70,6 +70,13 @@ export async function addCarToPaddock(formData: FormData) {
       RETURNING id;
     `;
 
+    // Ensure model brand exists in registry_models_list
+    await sql`
+      INSERT INTO registry_models_list (brand_name)
+      VALUES (${modelManufacturer})
+      ON CONFLICT (brand_name) DO NOTHING;
+    `;
+
 
     if (!result || result.rowCount === 0) {
       throw new Error('Database Commit Fault: Row not created');
@@ -77,8 +84,8 @@ export async function addCarToPaddock(formData: FormData) {
 
     console.log(`Sync Complete: ID ${result.rows[0].id} established.`);
     
-    // 5. Cache Invalidation
-    revalidatePath('/');
+    // 5. Hard Revalidation Purge
+    revalidatePath('/', 'layout');
     
     return { success: true, id: result.rows[0].id };
 
