@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useMemo, useEffect } from 'react';
-import { addCarToPaddock, addBrandToRegistry, removeBrandFromRegistry } from '@/app/actions';
+import { addCarToPaddock, addBrandToRegistry, removeBrandFromRegistry, deleteCarFromPaddock } from '@/app/actions';
 
 // ==========================================
 // ICONS
@@ -642,21 +642,17 @@ export default function DiecastDashboard() {
     setNotification('Purging Record...');
 
     try {
-      const response = await fetch('/api/paddock', { 
-        method: 'DELETE', 
-        headers: { 'Content-Type': 'application/json' }, 
-        body: JSON.stringify({ id }) 
-      });
-
-      if (!response.ok) throw new Error('Cloud Out of Sync');
+      const result = await deleteCarFromPaddock(id);
+      if (result?.error) throw new Error(result.error);
       
       setNotification('Record Erased.');
       // Final verified sync from DB
       refreshCollection(); 
-    } catch (e) { 
+    } catch (e: any) { 
       // 3. Rollback on Failure
+      console.error(e);
       setCollection(previousCollection);
-      alert('Vault Override Failed: Record Restored.');
+      alert(`Vault Override Failed: ${e.message || 'Record Restored'}`);
     }
   };
 
@@ -1046,12 +1042,17 @@ export default function DiecastDashboard() {
                      </div>
                   )}
 
-                  <div className="mt-auto py-6 border-t border-zinc-900">
+                  <div className="mt-auto py-6 border-t border-zinc-900 flex flex-col gap-5">
+                     <div className="flex items-center justify-between px-2 text-zinc-600 font-mono text-[10px] tracking-widest">
+                         <span className="opacity-50">LOGGED:</span>
+                         <span className="text-zinc-400 font-bold bg-zinc-900/50 px-3 py-1.5 rounded-lg border border-zinc-800/80">{expandedItem.dateAdded}</span>
+                     </div>
                      <button 
                         onClick={() => handleDeleteEntry(expandedItem.id)}
-                        className="w-full py-5 bg-zinc-900/50 hover:bg-red-600 text-[10px] font-black text-zinc-600 hover:text-white border border-zinc-800 rounded-[24px] tracking-widest uppercase transition-all flex items-center justify-center gap-3 shadow-inner"
+                        className="w-full py-4 bg-red-950/20 hover:bg-red-600 text-[11px] font-black text-red-500 hover:text-white border border-red-900/50 rounded-2xl tracking-widest uppercase transition-all flex items-center justify-center gap-3 shadow-sm group"
                      >
-                        <TrashIcon /> Purge Registry Record
+                        <span className="group-hover:animate-pulse"><TrashIcon /></span>
+                        Purge Registry Record
                      </button>
                   </div>
                </div>
@@ -1137,9 +1138,18 @@ export default function DiecastDashboard() {
                   </div>
 
 
-                  <div className="mt-12 flex justify-between items-center text-zinc-600 font-mono text-[10px] tracking-widest">
-                     <span>ADDED: {expandedItem.dateAdded}</span>
-                     <button onClick={() => handleDeleteEntry(expandedItem.id)} className="flex items-center gap-3 text-red-500 hover:text-white transition-all font-black uppercase tracking-widest"><TrashIcon /> Erase Record</button>
+                  <div className="mt-12 flex justify-between items-center text-zinc-600 font-mono text-[10px] tracking-widest border-t border-zinc-900 pt-8 w-full">
+                     <div className="flex items-center gap-3 bg-zinc-900/30 px-4 py-2 rounded-xl border border-zinc-800/50">
+                        <span className="opacity-50">LOGGED:</span>
+                        <span className="text-zinc-400 font-bold">{expandedItem.dateAdded}</span>
+                     </div>
+                     <button 
+                        onClick={() => handleDeleteEntry(expandedItem.id)} 
+                        className="flex items-center gap-3 px-6 py-3 bg-red-950/20 hover:bg-red-600 text-red-500 hover:text-white transition-all font-black uppercase tracking-widest rounded-xl border border-red-900/50 hover:border-red-500 shadow-sm group"
+                     >
+                        <span className="group-hover:animate-pulse"><TrashIcon /></span>
+                        Erase Record
+                     </button>
                   </div>
                </div>
             </div>

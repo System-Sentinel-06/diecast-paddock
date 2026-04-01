@@ -118,3 +118,27 @@ export async function removeBrandFromRegistry(brandName: string) {
     return { error: error.message };
   }
 }
+
+export async function deleteCarFromPaddock(id: number) {
+  try {
+    const carResult = await sql`SELECT model_manufacturer FROM cars WHERE id = ${id}`;
+    if (carResult.rowCount === 0) return { error: 'Record not found' };
+    const mfgToDelete = carResult.rows[0].model_manufacturer;
+
+    await sql`DELETE FROM cars WHERE id = ${id}`;
+
+    // Clean up registry_models_list if no more cars of this brand exist
+    if (mfgToDelete) {
+       const remainingResult = await sql`SELECT count(*) FROM cars WHERE model_manufacturer = ${mfgToDelete}`;
+       if (parseInt(remainingResult.rows[0].count) === 0) {
+         await sql`DELETE FROM registry_models_list WHERE brand_name = ${mfgToDelete}`;
+       }
+    }
+
+    revalidatePath('/', 'layout');
+    return { success: true };
+  } catch (error: any) {
+    console.error('Delete Action Error:', error);
+    return { error: error.message };
+  }
+}
