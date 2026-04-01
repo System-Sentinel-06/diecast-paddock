@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useMemo, useEffect } from 'react';
-import { addCarToPaddock } from '@/app/actions';
+import { addCarToPaddock, addBrandToRegistry, removeBrandFromRegistry } from '@/app/actions';
 
 // ==========================================
 // ICONS
@@ -431,7 +431,9 @@ export default function DiecastDashboard() {
   const [isUploading, setIsUploading] = useState(false);
   const [notification, setNotification] = useState<string | null>(null);
   const [pendingFile, setPendingFile] = useState<File | null>(null);
-
+  
+  const [isAddingBrand, setIsAddingBrand] = useState(false);
+  const [removingBrand, setRemovingBrand] = useState<string | null>(null);
 
   useEffect(() => {
     if (notification) { const timer = setTimeout(() => setNotification(null), 3000); return () => clearTimeout(timer); }
@@ -660,16 +662,41 @@ export default function DiecastDashboard() {
 
 
 
-  const handleAddCategory = () => {
+  const handleAddCategory = async () => {
      const clean = newCatName.trim();
      if (clean && !categories.includes(clean)) {
-        setCategories([...categories, clean].sort());
-        setNewCatName('');
+        setIsAddingBrand(true);
+        setNotification(`Registering Brand: ${clean}...`);
+        try {
+           const res = await addBrandToRegistry(clean);
+           if (res?.error) throw new Error(res.error);
+           setCategories([...categories, clean].sort());
+           setNewCatName('');
+           setNotification(`Brand Registered: ${clean}`);
+           refreshCollection();
+        } catch (e: any) {
+           alert(e.message);
+        } finally {
+           setIsAddingBrand(false);
+        }
      }
   };
 
-  const handleRemoveCategory = (cat: string) => {
-     setCategories(categories.filter(c => c !== cat));
+  const handleRemoveCategory = async (cat: string) => {
+     if (!confirm(`Are you sure you want to purge ${cat} from the registry configuration?`)) return;
+     setRemovingBrand(cat);
+     setNotification(`Purging Brand: ${cat}...`);
+     try {
+        const res = await removeBrandFromRegistry(cat);
+        if (res?.error) throw new Error(res.error);
+        setCategories(categories.filter(c => c !== cat));
+        setNotification(`Brand Erased: ${cat}`);
+        refreshCollection();
+     } catch (e: any) {
+        alert(e.message);
+     } finally {
+        setRemovingBrand(null);
+     }
   };
 
 
@@ -872,10 +899,11 @@ export default function DiecastDashboard() {
                      />
                      <button 
                         onClick={handleAddCategory}
-                        disabled={!newCatName.trim()}
+                        disabled={!newCatName.trim() || isAddingBrand}
                         className="flex items-center justify-center gap-2 px-6 h-12 sm:h-auto bg-red-600 hover:bg-red-500 text-white font-black text-[10px] uppercase rounded-xl transition-all disabled:opacity-30 disabled:cursor-not-allowed shadow-[0_4px_15px_rgba(239,68,68,0.3)] tracking-widest whitespace-nowrap"
                      >
-                        Add to Database
+                        {isAddingBrand ? <div className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin"></div> : null}
+                        {isAddingBrand ? 'Syncing...' : 'Add to Database'}
                      </button>
                   </div>
 
@@ -883,13 +911,14 @@ export default function DiecastDashboard() {
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[500px] overflow-y-auto hide-scrollbar pr-2">
                        {categories.map((cat) => (
                           <div key={cat} className="flex items-center justify-between bg-zinc-900 border border-zinc-800/80 p-4 rounded-2xl group hover:border-zinc-600 transition-colors">
-                             <span className="font-bold text-sm text-zinc-200">{cat}</span>
+                             <span className={`font-bold text-sm text-zinc-200 ${removingBrand === cat ? 'opacity-50 blur-[2px] transition-all' : ''}`}>{cat}</span>
                              <button 
                                 onClick={() => handleRemoveCategory(cat)}
-                                className="text-zinc-600 hover:text-red-500 transition-colors p-2 rounded-xl hover:bg-zinc-800"
+                                disabled={removingBrand === cat}
+                                className={`text-zinc-600 transition-colors p-2 rounded-xl ${removingBrand === cat ? 'text-red-500 cursor-not-allowed animate-pulse' : 'hover:text-red-500 hover:bg-zinc-800'}`}
                                 title="Remove Category"
                              >
-                                <TrashIcon />
+                                {removingBrand === cat ? <div className="w-4 h-4 border-2 border-red-500 border-t-transparent rounded-full animate-spin"></div> : <TrashIcon />}
                              </button>
                           </div>
                        ))}

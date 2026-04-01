@@ -94,3 +94,27 @@ export async function addCarToPaddock(formData: FormData) {
     return { error: error.message || 'Unknown Sync Fault' };
   }
 }
+
+export async function addBrandToRegistry(brandName: string) {
+  try {
+    await sql`
+      INSERT INTO registry_models_list (brand_name)
+      VALUES (${brandName})
+      ON CONFLICT (brand_name) DO NOTHING;
+    `;
+    revalidatePath('/', 'layout');
+    return { success: true };
+  } catch (error: any) {
+    return { error: error.message };
+  }
+}
+
+export async function removeBrandFromRegistry(brandName: string) {
+  try {
+    await sql`DELETE FROM registry_models_list WHERE brand_name = ${brandName}`;
+    revalidatePath('/', 'layout');
+    return { success: true };
+  } catch (error: any) {
+    return { error: error.message };
+  }
+}
