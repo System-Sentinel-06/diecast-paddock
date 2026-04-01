@@ -163,10 +163,10 @@ const LoadingScreen = ({ message = "Warming Engines" }: { message?: string }) =>
    <div className="fixed inset-0 z-[9999] bg-[#060202]/95 backdrop-blur-xl flex flex-col items-center justify-center animate-in fade-in duration-300">
       <div className="relative">
          {/* Internal Glow Pulse */}
-         <div className="absolute inset-0 bg-red-600/20 blur-[80px] rounded-full animate-pulse"></div>
+         <div className="absolute inset-0 bg-orange-600/20 blur-[80px] rounded-full animate-pulse"></div>
          
          {/* Animated Car Icon with driving effect */}
-         <div className="relative animate-bounce text-red-600 scale-[2.5] mb-12 drop-shadow-[0_0_15px_rgba(239,68,68,0.5)]">
+         <div className="relative animate-bounce text-orange-600 scale-[2.5] mb-12 drop-shadow-[0_0_15px_rgba(249,115,22,0.5)]">
             <CarIcon />
          </div>
       </div>
@@ -178,7 +178,7 @@ const LoadingScreen = ({ message = "Warming Engines" }: { message?: string }) =>
          
          {/* Racing Progress Bar */}
          <div className="w-[180px] h-[2px] bg-zinc-900 rounded-full overflow-hidden relative border border-white/5">
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-red-600 to-transparent w-1/2 animate-[progress_1.5s_infinite_linear]"></div>
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-orange-600 to-transparent w-1/2 animate-[progress_1.5s_infinite_linear]"></div>
          </div>
       </div>
 
@@ -200,31 +200,31 @@ const LoadingScreen = ({ message = "Warming Engines" }: { message?: string }) =>
 const AmbientBackground = ({ isIntro = false }: { isIntro?: boolean }) => (
   <div className="fixed inset-0 z-0 pointer-events-none bg-[#0a0202]">
     {/* Mild Red Layered Gradient Background - Maximum Brightness Requested */}
-    <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,_rgba(239,68,68,0.45)_0%,_transparent_80%)]"></div>
+    <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,_rgba(249,115,22,0.45)_0%,_transparent_80%)]"></div>
     <div className="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(15,5,5,1)_0%,rgba(65,12,12,1)_100%)]"></div>
 
 
 
     {/* Diagonal Striped Pattern */}
     {!isIntro && (
-      <div className="absolute inset-0 opacity-[0.07]" style={{ backgroundImage: 'repeating-linear-gradient(45deg, #ef4444 0, #ef4444 1px, transparent 0, transparent 40px)' }}></div>
+      <div className="absolute inset-0 opacity-[0.07]" style={{ backgroundImage: 'repeating-linear-gradient(45deg, #f97316 0, #f97316 1px, transparent 0, transparent 40px)' }}></div>
     )}
 
 
     {/* Red dot-matrix pattern */}
     {!isIntro && (
-      <div className="absolute inset-0 opacity-[0.12]" style={{ backgroundImage: 'radial-gradient(circle, #ef4444 0.8px, transparent 0.8px)', backgroundSize: '36px 36px' }}></div>
+      <div className="absolute inset-0 opacity-[0.12]" style={{ backgroundImage: 'radial-gradient(circle, #f97316 0.8px, transparent 0.8px)', backgroundSize: '36px 36px' }}></div>
     )}
 
     {/* Abstract Tech Patterns (Subtle Lines & Circuits) */}
     <div className="absolute inset-0 opacity-[0.05]">
        <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
           <pattern id="techPattern" width="100" height="100" patternUnits="userSpaceOnUse">
-             <path d="M 10 10 L 90 10 L 90 90 L 10 90 Z" fill="none" stroke="#ef4444" strokeWidth="0.5" />
-             <path d="M 30 10 L 30 30 L 10 30" fill="none" stroke="#ef4444" strokeWidth="0.5" />
-             <path d="M 70 90 L 70 70 L 90 70" fill="none" stroke="#ef4444" strokeWidth="0.5" />
-             <circle cx="10" cy="10" r="1.5" fill="#ef4444" />
-             <circle cx="90" cy="90" r="1.5" fill="#ef4444" />
+             <path d="M 10 10 L 90 10 L 90 90 L 10 90 Z" fill="none" stroke="#f97316" strokeWidth="0.5" />
+             <path d="M 30 10 L 30 30 L 10 30" fill="none" stroke="#f97316" strokeWidth="0.5" />
+             <path d="M 70 90 L 70 70 L 90 70" fill="none" stroke="#f97316" strokeWidth="0.5" />
+             <circle cx="10" cy="10" r="1.5" fill="#f97316" />
+             <circle cx="90" cy="90" r="1.5" fill="#f97316" />
           </pattern>
           <rect width="100%" height="100%" fill="url(#techPattern)" />
        </svg>
@@ -233,15 +233,15 @@ const AmbientBackground = ({ isIntro = false }: { isIntro?: boolean }) => (
     {/* Additional Abstract Blobs */}
     {!isIntro && (
        <>
-         <div className="absolute top-[10%] left-[-5%] w-[40vw] h-[40vw] bg-red-900/10 blur-[120px] rounded-full"></div>
-         <div className="absolute bottom-[-10%] right-[-5%] w-[50vw] h-[50vw] bg-red-950/20 blur-[150px] rounded-full"></div>
+         <div className="absolute top-[10%] left-[-5%] w-[40vw] h-[40vw] bg-orange-900/10 blur-[120px] rounded-full"></div>
+         <div className="absolute bottom-[-10%] right-[-5%] w-[50vw] h-[50vw] bg-orange-950/20 blur-[150px] rounded-full"></div>
        </>
     )}
 
     {/* Intro-only ambient orbs */}
     {isIntro && (
       <>
-        <div className="absolute top-[5%] left-[10%] w-[70vw] h-[70vw] rounded-full bg-red-500/30 mix-blend-screen blur-[140px]"></div>
+        <div className="absolute top-[5%] left-[10%] w-[70vw] h-[70vw] rounded-full bg-orange-500/30 mix-blend-screen blur-[140px]"></div>
         <div className="absolute bottom-[5%] right-[5%] w-[60vw] h-[60vw] rounded-full bg-orange-500/25 mix-blend-screen blur-[160px]"></div>
       </>
     )}
@@ -679,7 +679,7 @@ export default function DiecastDashboard() {
           {/* Left Text Block */}
           <div className="flex flex-col items-center text-center max-w-xl flex-shrink-0 z-20">
              <h1 className="text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-br from-white via-zinc-200 to-zinc-600 mb-4 sm:mb-6 drop-shadow-2xl">
-               Diecast<br/><span className="text-red-600">Paddock</span>
+               Diecast<br/><span className="text-orange-600">Paddock</span>
              </h1>
 
              <p className="text-zinc-500 font-sans text-sm sm:text-lg md:text-xl leading-relaxed mb-10 max-w-lg font-medium drop-shadow-md mx-auto">
@@ -689,7 +689,7 @@ export default function DiecastDashboard() {
 
              <button 
                onClick={() => setViewState('dashboard')}
-               className="group relative flex items-center justify-center gap-4 bg-gradient-to-br from-red-600 to-red-800 px-8 py-4 sm:px-10 sm:py-5 rounded-full text-xs sm:text-sm font-black tracking-widest uppercase text-white transition-all overflow-hidden shadow-[0_0_35px_rgba(220,38,38,0.4)] hover:shadow-[0_0_55px_rgba(239,68,68,0.7)] border border-red-500/50"
+               className="group relative flex items-center justify-center gap-4 bg-gradient-to-br from-orange-600 to-orange-800 px-8 py-4 sm:px-10 sm:py-5 rounded-full text-xs sm:text-sm font-black tracking-widest uppercase text-white transition-all overflow-hidden shadow-[0_0_35px_rgba(234,88,12,0.4)] hover:shadow-[0_0_55px_rgba(249,115,22,0.7)] border border-orange-500/50"
              >
                 <span className="relative z-10 flex items-center gap-3">Explore Collection <RightArrowIcon /></span>
              </button>
@@ -701,17 +701,17 @@ export default function DiecastDashboard() {
           <div className="w-full flex justify-center relative h-[250px] md:h-[300px] z-10 mt-4">
 
 
-            <div className="absolute inset-0 bg-gradient-to-tr from-red-600 to-orange-500 rounded-full blur-[80px] opacity-20 z-0 scale-[0.6] mix-blend-screen" />
+            <div className="absolute inset-0 bg-gradient-to-tr from-orange-600 to-orange-500 rounded-full blur-[80px] opacity-20 z-0 scale-[0.6] mix-blend-screen" />
             
-            <svg viewBox="0 0 200 200" className="relative z-10 w-full h-full drop-shadow-[0_0_20px_rgba(239,68,68,0.4)] object-contain transition-transform duration-1000 ease-in-out">
+            <svg viewBox="0 0 200 200" className="relative z-10 w-full h-full drop-shadow-[0_0_20px_rgba(249,115,22,0.4)] object-contain transition-transform duration-1000 ease-in-out">
                {/* Minimalist Outer Ring */}
-               <circle cx="100" cy="100" r="75" fill="none" stroke="#ef4444" strokeWidth="3" className="opacity-30" />
-               <circle cx="100" cy="100" r="85" fill="none" stroke="#dc2626" strokeWidth="1" strokeDasharray="10 6" />
+               <circle cx="100" cy="100" r="75" fill="none" stroke="#f97316" strokeWidth="3" className="opacity-30" />
+               <circle cx="100" cy="100" r="85" fill="none" stroke="#ea580c" strokeWidth="1" strokeDasharray="10 6" />
                
                {/* Core Geometric Yoke */}
                <path d="M 40 100 L 85 100 L 100 120 L 115 100 L 160 100" fill="none" stroke="#ffffff" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" />
-               <path d="M 100 120 L 100 160" fill="none" stroke="#ef4444" strokeWidth="5" strokeLinecap="round" />
-               <circle cx="100" cy="100" r="6" fill="#ef4444" />
+               <path d="M 100 120 L 100 160" fill="none" stroke="#f97316" strokeWidth="5" strokeLinecap="round" />
+               <circle cx="100" cy="100" r="6" fill="#f97316" />
             </svg>
           </div>
           
@@ -733,7 +733,7 @@ export default function DiecastDashboard() {
            {/* Profile Header */}
            <header className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between bg-zinc-950/80 p-4 sm:p-5 rounded-[32px] border border-zinc-800/80 backdrop-blur-xl mb-6 sm:mb-10 shadow-2xl gap-4">
               <div className="flex items-center gap-3 sm:gap-4 group">
-                 <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-gradient-to-br from-red-600 to-orange-600 flex items-center justify-center shadow-[0_0_20px_rgba(239,68,68,0.4)] text-white transition-transform group-hover:rotate-12">
+                 <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-gradient-to-br from-orange-600 to-orange-600 flex items-center justify-center shadow-[0_0_20px_rgba(249,115,22,0.4)] text-white transition-transform group-hover:rotate-12">
                     <TireIcon />
                  </div>
  
@@ -753,7 +753,7 @@ export default function DiecastDashboard() {
                      </button>
                      <button 
                         onClick={() => setViewState('dashboard')}
-                        className="flex-grow sm:flex-grow-0 flex items-center justify-center gap-2 h-10 sm:h-12 px-5 sm:px-7 bg-red-600 hover:bg-red-500 rounded-xl sm:rounded-2xl text-[10px] sm:text-xs font-black uppercase tracking-widest transition-all shadow-[0_4px_15px_rgba(239,68,68,0.3)] text-white"
+                        className="flex-grow sm:flex-grow-0 flex items-center justify-center gap-2 h-10 sm:h-12 px-5 sm:px-7 bg-orange-600 hover:bg-orange-500 rounded-xl sm:rounded-2xl text-[10px] sm:text-xs font-black uppercase tracking-widest transition-all shadow-[0_4px_15px_rgba(249,115,22,0.3)] text-white"
                      >
                         <span>Paddock</span>
                      </button>
@@ -770,7 +770,7 @@ export default function DiecastDashboard() {
                <div className="w-full lg:w-1/3 flex flex-col gap-4 sm:gap-6">
                   {/* Main Stat */}
                   <div className="bg-zinc-950/80 border border-zinc-800/80 rounded-[32px] p-6 sm:p-8 backdrop-blur-xl shadow-2xl relative overflow-hidden group flex-shrink-0">
-                     <div className="absolute -right-10 -top-10 w-40 h-40 bg-red-600/10 blur-[40px] rounded-full group-hover:bg-red-600/20 transition-all"></div>
+                     <div className="absolute -right-10 -top-10 w-40 h-40 bg-orange-600/10 blur-[40px] rounded-full group-hover:bg-orange-600/20 transition-all"></div>
                      <h3 className="text-[10px] sm:text-xs font-black text-zinc-500 uppercase tracking-widest mb-2">Total Registry</h3>
                      <p className="text-6xl sm:text-7xl font-black text-transparent bg-clip-text bg-gradient-to-b from-white to-zinc-500 drop-shadow-lg leading-none">
                         {collection.length}
@@ -786,7 +786,7 @@ export default function DiecastDashboard() {
                            {scaleStats.map(([scale, count]) => (
                               <div key={scale} className="bg-zinc-900/50 border border-zinc-800 px-3 py-2 rounded-xl flex items-center gap-3">
                                  <span className="font-black text-zinc-400 text-[10px] tracking-widest">{scale}</span>
-                                 <span className="text-red-500 font-mono text-xs font-black bg-black/60 px-2.5 py-1 rounded-lg border border-red-900/20">{count}</span>
+                                 <span className="text-orange-500 font-mono text-xs font-black bg-black/60 px-2.5 py-1 rounded-lg border border-orange-900/20">{count}</span>
                               </div>
                            ))}
                         </div>
@@ -805,7 +805,7 @@ export default function DiecastDashboard() {
                            {brandStats.map(([brand, count]) => (
                               <div key={brand} className="flex items-center justify-between border-b border-zinc-900 pb-2.5">
                                  <span className="text-xs font-black text-zinc-300 uppercase tracking-widest truncate pr-4">{brand}</span>
-                                 <span className="bg-black/60 border border-white/5 font-mono text-xs text-red-500 px-3 py-1.5 rounded-lg shadow-inner font-black">
+                                 <span className="bg-black/60 border border-white/5 font-mono text-xs text-orange-500 px-3 py-1.5 rounded-lg shadow-inner font-black">
                                     {count}
                                  </span>
                               </div>
@@ -847,7 +847,7 @@ export default function DiecastDashboard() {
                      <p className="text-zinc-500 text-sm sm:text-base font-medium">Configure the brand database used for logging new precision units.</p>
                   </div>
 
-                  <div className="flex flex-col sm:flex-row items-stretch gap-3 mb-8 bg-zinc-900/50 p-2 sm:p-3 rounded-2xl border border-zinc-800/50 transition-all focus-within:border-red-600/30">
+                  <div className="flex flex-col sm:flex-row items-stretch gap-3 mb-8 bg-zinc-900/50 p-2 sm:p-3 rounded-2xl border border-zinc-800/50 transition-all focus-within:border-orange-600/30">
                      <input 
                         type="text"
                         value={newCatName}
@@ -858,7 +858,7 @@ export default function DiecastDashboard() {
                      <button 
                         onClick={handleAddCategory}
                         disabled={!newCatName.trim() || isAddingBrand}
-                        className="flex items-center justify-center gap-2 px-6 h-12 sm:h-auto bg-red-600 hover:bg-red-500 text-white font-black text-[10px] uppercase rounded-xl transition-all disabled:opacity-30 disabled:cursor-not-allowed shadow-[0_4px_15px_rgba(239,68,68,0.3)] tracking-widest whitespace-nowrap"
+                        className="flex items-center justify-center gap-2 px-6 h-12 sm:h-auto bg-orange-600 hover:bg-orange-500 text-white font-black text-[10px] uppercase rounded-xl transition-all disabled:opacity-30 disabled:cursor-not-allowed shadow-[0_4px_15px_rgba(249,115,22,0.3)] tracking-widest whitespace-nowrap"
                      >
                         {isAddingBrand ? <div className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin"></div> : null}
                         {isAddingBrand ? 'Syncing...' : 'Add to Database'}
@@ -873,10 +873,10 @@ export default function DiecastDashboard() {
                              <button 
                                 onClick={() => handleRemoveCategory(cat)}
                                 disabled={removingBrand === cat}
-                                className={`text-zinc-600 transition-colors p-2 rounded-xl ${removingBrand === cat ? 'text-red-500 cursor-not-allowed animate-pulse' : 'hover:text-red-500 hover:bg-zinc-800'}`}
+                                className={`text-zinc-600 transition-colors p-2 rounded-xl ${removingBrand === cat ? 'text-orange-500 cursor-not-allowed animate-pulse' : 'hover:text-orange-500 hover:bg-zinc-800'}`}
                                 title="Remove Category"
                              >
-                                {removingBrand === cat ? <div className="w-4 h-4 border-2 border-red-500 border-t-transparent rounded-full animate-spin"></div> : <TrashIcon />}
+                                {removingBrand === cat ? <div className="w-4 h-4 border-2 border-orange-500 border-t-transparent rounded-full animate-spin"></div> : <TrashIcon />}
                              </button>
                           </div>
                        ))}
@@ -905,7 +905,7 @@ export default function DiecastDashboard() {
 
       {notification && (
         <div className="fixed top-24 left-1/2 -translate-x-1/2 z-[100] animate-in slide-in-from-top-10 duration-500">
-           <div className="bg-red-600 text-white px-8 py-4 rounded-2xl shadow-[0_0_40px_rgba(220,38,38,0.5)] font-black text-xs uppercase tracking-widest border border-red-400">{notification}</div>
+           <div className="bg-orange-600 text-white px-8 py-4 rounded-2xl shadow-[0_0_40px_rgba(234,88,12,0.5)] font-black text-xs uppercase tracking-widest border border-orange-400">{notification}</div>
         </div>
       )}
 
@@ -945,13 +945,13 @@ export default function DiecastDashboard() {
                      <>
                         <button 
                            onClick={(e) => { e.stopPropagation(); setActiveImageIndex(p => (p - 1 + expandedItem.imageUrls.length) % expandedItem.imageUrls.length); }}
-                           className="absolute left-3 top-1/2 -translate-y-1/2 z-30 w-12 h-12 bg-black/50 backdrop-blur-md rounded-full border border-white/10 text-white flex items-center justify-center hover:bg-red-600 transition-all font-black text-xl"
+                           className="absolute left-3 top-1/2 -translate-y-1/2 z-30 w-12 h-12 bg-black/50 backdrop-blur-md rounded-full border border-white/10 text-white flex items-center justify-center hover:bg-orange-600 transition-all font-black text-xl"
                         >
                            &lsaquo;
                         </button>
                         <button 
                            onClick={(e) => { e.stopPropagation(); setActiveImageIndex(p => (p + 1) % expandedItem.imageUrls.length); }}
-                           className="absolute right-3 top-1/2 -translate-y-1/2 z-30 w-12 h-12 bg-black/50 backdrop-blur-md rounded-full border border-white/10 text-white flex items-center justify-center hover:bg-red-600 transition-all font-black text-xl"
+                           className="absolute right-3 top-1/2 -translate-y-1/2 z-30 w-12 h-12 bg-black/50 backdrop-blur-md rounded-full border border-white/10 text-white flex items-center justify-center hover:bg-orange-600 transition-all font-black text-xl"
                         >
                            &rsaquo;
                         </button>
@@ -972,7 +972,7 @@ export default function DiecastDashboard() {
                {/* Content (Mobile) Scrollable */}
                <div className="flex flex-col flex-grow overflow-y-auto bg-zinc-950 p-6 pt-10 rounded-t-[44px] -mt-12 relative z-30 shadow-[0_-30px_60px_rgba(0,0,0,0.9)] border-t border-zinc-800/80">
                   <div className="flex items-center gap-3 mb-6">
-                     <span className="px-3 py-1 bg-red-950/30 border border-red-900/50 text-[9px] font-black tracking-widest text-red-500 rounded-lg">{expandedItem.scale}</span>
+                     <span className="px-3 py-1 bg-orange-950/30 border border-orange-900/50 text-[9px] font-black tracking-widest text-orange-500 rounded-lg">{expandedItem.scale}</span>
                   </div>
 
                   <h2 className="text-3xl font-black text-white leading-tight mb-8 tracking-tighter">{expandedItem.title}</h2>
@@ -996,7 +996,7 @@ export default function DiecastDashboard() {
                            <button 
                               key={i} 
                               onClick={() => setActiveImageIndex(i)}
-                              className={`w-20 h-20 rounded-[20px] flex-shrink-0 overflow-hidden border-2 transition-all ${activeImageIndex === i ? 'border-red-600 scale-105 shadow-[0_0_20px_rgba(239,68,68,0.3)]' : 'border-transparent opacity-40 hover:opacity-100'}`}
+                              className={`w-20 h-20 rounded-[20px] flex-shrink-0 overflow-hidden border-2 transition-all ${activeImageIndex === i ? 'border-orange-600 scale-105 shadow-[0_0_20px_rgba(249,115,22,0.3)]' : 'border-transparent opacity-40 hover:opacity-100'}`}
                            >
                               <ImageWithPlaceholder src={url} alt={`t-${i}`} className="w-full h-full" />
                            </button>
@@ -1011,7 +1011,7 @@ export default function DiecastDashboard() {
                      </div>
                      <button 
                         onClick={() => handleDeleteEntry(expandedItem.id)}
-                        className="w-full py-4 bg-red-950/20 hover:bg-red-600 text-[11px] font-black text-red-500 hover:text-white border border-red-900/50 rounded-2xl tracking-widest uppercase transition-all flex items-center justify-center gap-3 shadow-sm group"
+                        className="w-full py-4 bg-orange-950/20 hover:bg-orange-600 text-[11px] font-black text-orange-500 hover:text-white border border-orange-900/50 rounded-2xl tracking-widest uppercase transition-all flex items-center justify-center gap-3 shadow-sm group"
                      >
                         <span className="group-hover:animate-pulse"><TrashIcon /></span>
                         Purge Registry Record
@@ -1042,8 +1042,8 @@ export default function DiecastDashboard() {
                      
                      {expandedItem.imageUrls.length > 1 && (
                         <div className="absolute top-1/2 -translate-y-1/2 left-0 right-0 flex justify-between px-8 z-30 pointer-events-none">
-                           <button onClick={(e) => { e.stopPropagation(); setActiveImageIndex(p => (p - 1 + expandedItem.imageUrls.length) % expandedItem.imageUrls.length); }} className="pointer-events-auto w-14 h-14 bg-black/50 hover:bg-red-600 rounded-full backdrop-blur-2xl border border-white/5 transition-all text-white font-black text-2xl shadow-2xl hover:scale-110 flex items-center justify-center">&lsaquo;</button>
-                           <button onClick={(e) => { e.stopPropagation(); setActiveImageIndex(p => (p + 1) % expandedItem.imageUrls.length); }} className="pointer-events-auto w-14 h-14 bg-black/50 hover:bg-red-600 rounded-full backdrop-blur-2xl border border-white/5 transition-all text-white font-black text-2xl shadow-2xl hover:scale-110 flex items-center justify-center">&rsaquo;</button>
+                           <button onClick={(e) => { e.stopPropagation(); setActiveImageIndex(p => (p - 1 + expandedItem.imageUrls.length) % expandedItem.imageUrls.length); }} className="pointer-events-auto w-14 h-14 bg-black/50 hover:bg-orange-600 rounded-full backdrop-blur-2xl border border-white/5 transition-all text-white font-black text-2xl shadow-2xl hover:scale-110 flex items-center justify-center">&lsaquo;</button>
+                           <button onClick={(e) => { e.stopPropagation(); setActiveImageIndex(p => (p + 1) % expandedItem.imageUrls.length); }} className="pointer-events-auto w-14 h-14 bg-black/50 hover:bg-orange-600 rounded-full backdrop-blur-2xl border border-white/5 transition-all text-white font-black text-2xl shadow-2xl hover:scale-110 flex items-center justify-center">&rsaquo;</button>
                         </div>
                      )}
 
@@ -1055,7 +1055,7 @@ export default function DiecastDashboard() {
                                  <button 
                                     key={i}
                                     onClick={() => setActiveImageIndex(i)}
-                                    className={`w-14 h-14 rounded-2xl overflow-hidden border-2 transition-all flex-shrink-0 ${activeImageIndex === i ? 'border-red-600 scale-110' : 'border-transparent opacity-40 hover:opacity-100 hover:scale-105'}`}
+                                    className={`w-14 h-14 rounded-2xl overflow-hidden border-2 transition-all flex-shrink-0 ${activeImageIndex === i ? 'border-orange-600 scale-110' : 'border-transparent opacity-40 hover:opacity-100 hover:scale-105'}`}
                                  >
                                     <ImageWithPlaceholder src={url} alt={`th-${i}`} className="w-full h-full" />
                                  </button>
@@ -1081,13 +1081,13 @@ export default function DiecastDashboard() {
                   <h1 className="text-5xl font-black text-white leading-tight mb-8 tracking-tighter w-full max-w-[80%] mx-auto">{expandedItem.title}</h1>
                   
                   <div className="grid grid-cols-2 gap-4 border-b border-zinc-900 pb-10 mb-10 w-full animate-in zoom-in-95 duration-500">
-                     <div className="p-6 bg-zinc-900/40 backdrop-blur-xl rounded-[32px] border border-zinc-800/40 group/stat hover:border-red-900 transition-all">
-                        <p className="text-[10px] font-black text-zinc-600 uppercase tracking-widest mb-1 group-hover/stat:text-red-500">Manufacturer</p>
+                     <div className="p-6 bg-zinc-900/40 backdrop-blur-xl rounded-[32px] border border-zinc-800/40 group/stat hover:border-orange-900 transition-all">
+                        <p className="text-[10px] font-black text-zinc-600 uppercase tracking-widest mb-1 group-hover/stat:text-orange-500">Manufacturer</p>
                         <p className="text-xl font-black text-zinc-200">{expandedItem.manufacturer}</p>
                      </div>
-                     <div className="p-6 bg-zinc-900/40 backdrop-blur-xl rounded-[32px] border border-zinc-800/40 group/stat hover:border-red-900 transition-all">
-                        <p className="text-[10px] font-black text-zinc-600 uppercase tracking-widest mb-1 group-hover/stat:text-red-500">Scale Ratio</p>
-                        <p className="text-xl font-black text-red-500 tracking-tighter">{expandedItem.scale}</p>
+                     <div className="p-6 bg-zinc-900/40 backdrop-blur-xl rounded-[32px] border border-zinc-800/40 group/stat hover:border-orange-900 transition-all">
+                        <p className="text-[10px] font-black text-zinc-600 uppercase tracking-widest mb-1 group-hover/stat:text-orange-500">Scale Ratio</p>
+                        <p className="text-xl font-black text-orange-500 tracking-tighter">{expandedItem.scale}</p>
                      </div>
                   </div>
 
@@ -1106,7 +1106,7 @@ export default function DiecastDashboard() {
                      </div>
                      <button 
                         onClick={() => handleDeleteEntry(expandedItem.id)} 
-                        className="flex items-center gap-3 px-6 py-3 bg-red-950/20 hover:bg-red-600 text-red-500 hover:text-white transition-all font-black uppercase tracking-widest rounded-xl border border-red-900/50 hover:border-red-500 shadow-sm group"
+                        className="flex items-center gap-3 px-6 py-3 bg-orange-950/20 hover:bg-orange-600 text-orange-500 hover:text-white transition-all font-black uppercase tracking-widest rounded-xl border border-orange-900/50 hover:border-orange-500 shadow-sm group"
                      >
                         <span className="group-hover:animate-pulse"><TrashIcon /></span>
                         Erase Record
@@ -1126,8 +1126,8 @@ export default function DiecastDashboard() {
        {/* Top Navbar */}
         <header className="flex flex-col md:flex-row justify-between items-stretch md:items-center gap-4 md:gap-5 bg-zinc-950/80 p-3 sm:p-5 rounded-3xl border border-zinc-800/80 backdrop-blur-xl sticky top-2 sm:top-4 z-40 shadow-2xl">
           <div className="flex items-center justify-between md:justify-start gap-5 cursor-pointer" onClick={() => setViewState('intro')}>
-            <div className="flex h-11 md:h-12 items-center gap-3 bg-zinc-900 border border-zinc-800 px-3 md:px-4 rounded-2xl group transition-all hover:border-red-500/50">
-               <div className="text-red-600 transition-transform group-hover:scale-110">
+            <div className="flex h-11 md:h-12 items-center gap-3 bg-zinc-900 border border-zinc-800 px-3 md:px-4 rounded-2xl group transition-all hover:border-orange-500/50">
+               <div className="text-orange-600 transition-transform group-hover:scale-110">
                  <CarIcon />
                </div>
                <h1 className="text-sm md:text-lg font-black tracking-[0.2em] text-white uppercase mt-0.5">
@@ -1138,8 +1138,8 @@ export default function DiecastDashboard() {
 
           <div className="flex flex-1 mx-0 md:mx-4">
              {!isAdding && (
-               <div className="flex items-center w-full gap-3 px-4 h-11 bg-zinc-950 border border-zinc-800 rounded-2xl shadow-inner group focus-within:border-red-600/50 transition-all">
-                 <span className="text-zinc-600 group-focus-within:text-red-500 transition-all scale-90 group-focus-within:scale-110">
+               <div className="flex items-center w-full gap-3 px-4 h-11 bg-zinc-950 border border-zinc-800 rounded-2xl shadow-inner group focus-within:border-orange-600/50 transition-all">
+                 <span className="text-zinc-600 group-focus-within:text-orange-500 transition-all scale-90 group-focus-within:scale-110">
                    <SearchIcon />
                  </span>
                  <input 
@@ -1158,7 +1158,7 @@ export default function DiecastDashboard() {
               {/* Registry Access (Thematic Icon) */}
               <button 
                 onClick={() => setViewState('profile')}
-                className="flex items-center justify-center gap-2.5 h-11 md:h-12 px-5 rounded-2xl bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-red-500 hover:border-red-950 transition-all font-black shadow-xl group"
+                className="flex items-center justify-center gap-2.5 h-11 md:h-12 px-5 rounded-2xl bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-orange-500 hover:border-orange-950 transition-all font-black shadow-xl group"
                 title="Registry Configuration"
               >
                 <div className="w-5 h-5 transition-transform group-hover:rotate-12">
@@ -1169,7 +1169,7 @@ export default function DiecastDashboard() {
 
               <button 
                 onClick={() => setIsAdding(!isAdding)}
-                className="flex-grow sm:flex-grow-0 flex items-center justify-center gap-2 rounded-2xl px-4 sm:px-6 h-11 md:h-12 text-[10px] md:text-[11px] font-black uppercase tracking-widest text-white bg-red-600 hover:bg-red-500 hover:shadow-[0_4px_20px_rgba(239,68,68,0.4)] transition-all shadow-xl"
+                className="flex-grow sm:flex-grow-0 flex items-center justify-center gap-2 rounded-2xl px-4 sm:px-6 h-11 md:h-12 text-[10px] md:text-[11px] font-black uppercase tracking-widest text-white bg-orange-600 hover:bg-orange-500 hover:shadow-[0_4px_20px_rgba(249,115,22,0.4)] transition-all shadow-xl"
               >
                 {isAdding ? <CloseIcon /> : <PlusIcon />}
                 <span className="hidden sm:inline">{isAdding ? "CANCEL" : "ADD NEW"}</span>
@@ -1187,7 +1187,7 @@ export default function DiecastDashboard() {
               <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
                  {/* Brand Filter */}
                  <div className="flex items-center h-11 sm:h-9 bg-zinc-900 border border-zinc-800 rounded-2xl sm:rounded-xl overflow-hidden shadow-inner">
-                    <span className="px-3 text-[10px] sm:text-[9px] font-black text-red-600 uppercase tracking-widest border-r border-zinc-800 h-full flex items-center">Brand</span>
+                    <span className="px-3 text-[10px] sm:text-[9px] font-black text-orange-600 uppercase tracking-widest border-r border-zinc-800 h-full flex items-center">Brand</span>
                     <select
                       value={filterBrand}
                       onChange={(e) => setFilterBrand(e.target.value)}
@@ -1200,7 +1200,7 @@ export default function DiecastDashboard() {
 
                  {/* Scale Filter */}
                  <div className="flex items-center h-11 sm:h-9 bg-zinc-900 border border-zinc-800 rounded-2xl sm:rounded-xl overflow-hidden shadow-inner">
-                    <span className="px-3 text-[10px] sm:text-[9px] font-black text-red-600 uppercase tracking-widest border-r border-zinc-800 h-full flex items-center">Scale</span>
+                    <span className="px-3 text-[10px] sm:text-[9px] font-black text-orange-600 uppercase tracking-widest border-r border-zinc-800 h-full flex items-center">Scale</span>
                     <select
                       value={filterScale}
                       onChange={(e) => setFilterScale(e.target.value)}
@@ -1217,7 +1217,7 @@ export default function DiecastDashboard() {
                    <button
                      key={mode}
                      onClick={() => setSortBy(mode)}
-                     className={`flex-1 sm:flex-none h-9 sm:h-7 px-4 rounded-xl sm:rounded-lg text-[10px] font-black uppercase tracking-widest transition-all ${sortBy === mode ? 'bg-red-600 text-white shadow-lg shadow-red-900/40' : 'text-zinc-500 hover:text-zinc-200 hover:bg-zinc-800'}`}
+                     className={`flex-1 sm:flex-none h-9 sm:h-7 px-4 rounded-xl sm:rounded-lg text-[10px] font-black uppercase tracking-widest transition-all ${sortBy === mode ? 'bg-orange-600 text-white shadow-lg shadow-orange-900/40' : 'text-zinc-500 hover:text-zinc-200 hover:bg-zinc-800'}`}
                    >
                      {mode === 'carbrand' ? 'GARAGE' : mode === 'alphabetical' ? 'A-Z' : mode === 'recent' ? 'NEW' : 'SIZE'}
                    </button>
@@ -1241,7 +1241,7 @@ export default function DiecastDashboard() {
                      <label className="text-xs font-bold text-zinc-400 flex justify-between uppercase tracking-wider">
                          Photographic Media <span className="text-zinc-600 font-mono text-[10px] tracking-widest">MULTIPLE ALLOWED</span>
                      </label>
-                     <div className="relative border-2 border-dashed border-zinc-700 hover:border-red-500 transition-all bg-zinc-900/50 h-72 sm:h-80 w-full flex flex-col items-center justify-center gap-5 cursor-pointer group rounded-3xl overflow-hidden p-6">
+                     <div className="relative border-2 border-dashed border-zinc-700 hover:border-orange-500 transition-all bg-zinc-900/50 h-72 sm:h-80 w-full flex flex-col items-center justify-center gap-5 cursor-pointer group rounded-3xl overflow-hidden p-6">
                         <input 
                           type="file" 
                           multiple 
@@ -1253,8 +1253,8 @@ export default function DiecastDashboard() {
                         
                         {newImages.length === 0 ? (
                            <>
-                              <div className={`p-5 rounded-full bg-zinc-800 text-zinc-500 group-hover:bg-red-500/15 group-hover:text-red-500 transition-all shadow-inner ${isUploading ? 'animate-pulse' : ''}`}>
-                                {isUploading ? <div className="w-9 h-9 border-4 border-red-500 border-t-transparent rounded-full animate-spin"></div> : <UploadIcon />}
+                              <div className={`p-5 rounded-full bg-zinc-800 text-zinc-500 group-hover:bg-orange-500/15 group-hover:text-orange-500 transition-all shadow-inner ${isUploading ? 'animate-pulse' : ''}`}>
+                                {isUploading ? <div className="w-9 h-9 border-4 border-orange-500 border-t-transparent rounded-full animate-spin"></div> : <UploadIcon />}
                               </div>
                               <div className="text-center translate-y-3 group-hover:translate-y-0 transition-transform">
                                 <p className="text-lg font-black text-zinc-300 mb-2 group-hover:text-white tracking-widest uppercase relative z-10">
@@ -1270,8 +1270,8 @@ export default function DiecastDashboard() {
                                     <img src={url} alt={`Preview ${i}`} className="w-full h-full object-cover" />
                                  </div>
                               ))}
-                              <div className="relative aspect-square rounded-2xl border-2 border-dashed border-zinc-700 flex flex-col items-center justify-center text-zinc-500 hover:text-red-500 hover:border-red-500 transition-colors bg-zinc-900/30">
-                                 {isUploading ? <div className="w-5 h-5 border-2 border-red-500 border-t-transparent rounded-full animate-spin"></div> : <PlusIcon />}
+                              <div className="relative aspect-square rounded-2xl border-2 border-dashed border-zinc-700 flex flex-col items-center justify-center text-zinc-500 hover:text-orange-500 hover:border-orange-500 transition-colors bg-zinc-900/30">
+                                 {isUploading ? <div className="w-5 h-5 border-2 border-orange-500 border-t-transparent rounded-full animate-spin"></div> : <PlusIcon />}
                                  <span className="text-[10px] mt-2 font-bold tracking-widest uppercase">{isUploading ? 'Uploading' : 'Add More'}</span>
                               </div>
                            </div>
@@ -1286,7 +1286,7 @@ export default function DiecastDashboard() {
                          <select 
                            value={newBrand}
                            onChange={(e) => setNewBrand(e.target.value)}
-                           className="w-full bg-zinc-900 border border-zinc-800 rounded-2xl px-5 py-4 text-sm focus:outline-none focus:border-red-500 transition-colors text-white appearance-none cursor-pointer pr-10 shadow-inner"
+                           className="w-full bg-zinc-900 border border-zinc-800 rounded-2xl px-5 py-4 text-sm focus:outline-none focus:border-orange-500 transition-colors text-white appearance-none cursor-pointer pr-10 shadow-inner"
                          >
                            <option value="" disabled>Select from Registry</option>
                            {categories.map(b => (
@@ -1304,7 +1304,7 @@ export default function DiecastDashboard() {
                          <select 
                            value={newScale}
                            onChange={(e) => setNewScale(e.target.value)}
-                           className="w-full bg-zinc-900 border border-zinc-800 rounded-2xl px-5 py-4 text-sm focus:outline-none focus:border-red-500 transition-colors text-white appearance-none cursor-pointer pr-10 shadow-inner"
+                           className="w-full bg-zinc-900 border border-zinc-800 rounded-2xl px-5 py-4 text-sm focus:outline-none focus:border-orange-500 transition-colors text-white appearance-none cursor-pointer pr-10 shadow-inner"
                          >
                            <option>1:18</option>
                            <option>1:24</option>
@@ -1327,7 +1327,7 @@ export default function DiecastDashboard() {
                       type="text" 
                       value={newTitle}
                       onChange={(e) => setNewTitle(e.target.value)}
-                      className="w-full bg-zinc-900 border border-zinc-800 rounded-2xl px-5 py-4 text-base font-bold focus:outline-none focus:border-red-500 transition-colors text-white placeholder-zinc-700 shadow-inner" 
+                      className="w-full bg-zinc-900 border border-zinc-800 rounded-2xl px-5 py-4 text-base font-bold focus:outline-none focus:border-orange-500 transition-colors text-white placeholder-zinc-700 shadow-inner" 
                       placeholder="e.g. Nissan Skyline GT-R (R34)" 
                     />
                   </div>
@@ -1337,7 +1337,7 @@ export default function DiecastDashboard() {
                     <textarea 
                       value={newDesc}
                       onChange={(e) => setNewDesc(e.target.value)}
-                      className="w-full bg-zinc-900 border border-zinc-800 rounded-2xl px-5 py-4 text-base focus:outline-none focus:border-red-500 transition-colors text-zinc-300 resize-none flex-grow shadow-inner" 
+                      className="w-full bg-zinc-900 border border-zinc-800 rounded-2xl px-5 py-4 text-base focus:outline-none focus:border-orange-500 transition-colors text-zinc-300 resize-none flex-grow shadow-inner" 
                       placeholder="Add details about acquisition, specs..."
                     ></textarea>
                   </div>
@@ -1346,7 +1346,7 @@ export default function DiecastDashboard() {
                   <div className="flex justify-end gap-4 pt-6 mt-auto">
                     <button 
                       onClick={() => setIsAdding(false)}
-                      className="px-6 py-4 rounded-full text-sm font-bold text-red-500 bg-red-950/20 hover:bg-red-600 hover:text-white border border-red-900/50 transition-colors uppercase tracking-widest shadow-sm"
+                      className="px-6 py-4 rounded-full text-sm font-bold text-orange-500 bg-orange-950/20 hover:bg-orange-600 hover:text-white border border-orange-900/50 transition-colors uppercase tracking-widest shadow-sm"
                     >
                       Discard Entry
                     </button>
@@ -1372,7 +1372,7 @@ export default function DiecastDashboard() {
                         key={slug}
                         className="rounded-[32px] p-[2px] transition-all duration-300 hover:scale-[1.02] hover:-translate-y-1 cursor-pointer"
                         style={{ 
-                          background: 'linear-gradient(to bottom, #ef4444, #991b1b)',
+                          background: 'linear-gradient(to bottom, #f97316, #991b1b)',
                           boxShadow: '0 8px 30px rgba(0,0,0,0.6)'
                         }}
                       >
@@ -1389,7 +1389,7 @@ export default function DiecastDashboard() {
                          />
                        </div>
                        <div className="flex flex-col items-center mt-2">
-                         <span className="text-base font-black tracking-tight text-white group-hover:text-red-400 uppercase">{capitalizeSlug(slug)}</span>
+                         <span className="text-base font-black tracking-tight text-white group-hover:text-orange-400 uppercase">{capitalizeSlug(slug)}</span>
                          <span className="text-xs font-bold text-zinc-500 bg-zinc-900 px-3 py-1 rounded-full border border-zinc-800 mt-2">{count} {count === 1 ? 'Model' : 'Models'}</span>
                        </div>
                      </button>
@@ -1411,7 +1411,7 @@ export default function DiecastDashboard() {
                        </div>
                        <button 
                          onClick={() => setFilterCarBrand('ALL')}
-                         className="px-4 py-3 md:px-6 md:py-3 rounded-xl text-xs font-bold text-white bg-zinc-800 hover:bg-red-600 transition-colors uppercase tracking-widest shadow-sm border border-zinc-700 hover:border-red-500 flex items-center gap-2 shrink-0"
+                         className="px-4 py-3 md:px-6 md:py-3 rounded-xl text-xs font-bold text-white bg-zinc-800 hover:bg-orange-600 transition-colors uppercase tracking-widest shadow-sm border border-zinc-700 hover:border-orange-500 flex items-center gap-2 shrink-0"
                        >
                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="hidden sm:block"><path d="M19 12H5"></path><polyline points="12 19 5 12 12 5"></polyline></svg>
                          <TireIcon className="w-4 h-4" />
@@ -1433,7 +1433,7 @@ export default function DiecastDashboard() {
                     <div
                       key={item.id}
                       onClick={() => setExpandedItem(item)}
-                      className="group relative flex flex-col bg-zinc-950 rounded-[20px] sm:rounded-[40px] overflow-hidden cursor-pointer transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_20px_50px_rgba(239,68,68,0.2)] border border-zinc-900 hover:border-red-600/30"
+                      className="group relative flex flex-col bg-zinc-950 rounded-[20px] sm:rounded-[40px] overflow-hidden cursor-pointer transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_20px_50px_rgba(249,115,22,0.2)] border border-zinc-900 hover:border-orange-600/30"
                     >
 
                       <div className="relative aspect-[4/3] overflow-hidden">
@@ -1462,14 +1462,14 @@ export default function DiecastDashboard() {
                       </div>
 
                       <div className="flex flex-col p-3 sm:p-6 pt-2">
-                        <h3 className="text-xs sm:text-lg font-black tracking-tight text-white group-hover:text-red-500 transition-colors line-clamp-2 leading-tight mb-1 sm:mb-4">
+                        <h3 className="text-xs sm:text-lg font-black tracking-tight text-white group-hover:text-orange-500 transition-colors line-clamp-2 leading-tight mb-1 sm:mb-4">
                           {item.title}
                         </h3>
                         <div className="flex items-center justify-between mt-auto">
                           <span className="hidden sm:inline text-[9px] font-black text-zinc-600 uppercase tracking-widest">
                             {item.manufacturer}
                           </span>
-                          <span className="text-[10px] sm:text-[11px] font-black text-red-600/80 tracking-tighter">
+                          <span className="text-[10px] sm:text-[11px] font-black text-orange-600/80 tracking-tighter">
                             {item.scale}
                           </span>
                         </div>
