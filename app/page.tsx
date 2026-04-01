@@ -106,13 +106,38 @@ const SearchIcon = () => (
   </svg>
 );
 
-const ImageWithPlaceholder = ({ src, alt, className = "", innerClassName = "", priority = false, sizes = "(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" }: { src: string; alt: string; className?: string; innerClassName?: string; priority?: boolean; sizes?: string }) => {
+const ImageWithPlaceholder = ({ 
+  src, 
+  alt, 
+  className = "", 
+  innerClassName = "", 
+  priority = false, 
+  sizes = "(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw",
+  quality = 75,
+  blurDataURL = ""
+}: { 
+  src: string; 
+  alt: string; 
+  className?: string; 
+  innerClassName?: string; 
+  priority?: boolean; 
+  sizes?: string;
+  quality?: number;
+  blurDataURL?: string;
+}) => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [error, setError] = useState(false);
 
+  // Reset loading state when source changes significantly
+  useEffect(() => {
+    if (!blurDataURL) {
+      setIsLoaded(false);
+    }
+  }, [src]);
+
   return (
     <div className={`relative overflow-hidden ${className} bg-zinc-900/50`}>
-      {(!isLoaded || error) && (
+      {(!isLoaded || error) && !blurDataURL && (
         <div className="absolute inset-0 z-10 animate-pulse bg-zinc-900 flex items-center justify-center">
             <CarIcon />
         </div>
@@ -124,6 +149,9 @@ const ImageWithPlaceholder = ({ src, alt, className = "", innerClassName = "", p
         fill
         sizes={sizes}
         priority={priority}
+        quality={quality}
+        placeholder={blurDataURL ? "blur" : undefined}
+        blurDataURL={blurDataURL || undefined}
         onLoad={() => setIsLoaded(true)}
         onError={() => setError(true)}
         className={`${innerClassName} transition-all duration-700 ease-out ${isLoaded ? 'opacity-100 scale-100' : 'opacity-0 scale-110'}`}
@@ -361,6 +389,7 @@ const compressImage = async (file: File): Promise<Blob> => {
 export default function DiecastDashboard() {
   const [viewState, setViewState] = useState<'intro' | 'dashboard' | 'profile'>('intro');
   const [isAdding, setIsAdding] = useState(false);
+  const [smartResolution, setSmartResolution] = useState(true);
   
   // App State Models
   const [collection, setCollection] = useState<DiecastModel[]>(initialMockCollection);
@@ -931,7 +960,10 @@ export default function DiecastDashboard() {
                     src={expandedItem.imageUrls[activeImageIndex]} 
                     alt={expandedItem.title}
                     className="w-full h-full"
-                    innerClassName="w-full h-full object-contain" // Contain for better full-car view
+                    innerClassName="w-full h-full object-contain"
+                    quality={smartResolution ? 95 : 85}
+                    sizes="100vw"
+                    blurDataURL={smartResolution ? expandedItem.imageUrls[activeImageIndex] : undefined}
                   />
                   
                   {/* Overlay Controls (Mobile) */}
@@ -998,7 +1030,13 @@ export default function DiecastDashboard() {
                               onClick={() => setActiveImageIndex(i)}
                               className={`w-20 h-20 rounded-[20px] flex-shrink-0 overflow-hidden border-2 transition-all ${activeImageIndex === i ? 'border-orange-600 scale-105 shadow-[0_0_20px_rgba(249,115,22,0.3)]' : 'border-transparent opacity-40 hover:opacity-100'}`}
                            >
-                              <ImageWithPlaceholder src={url} alt={`t-${i}`} className="w-full h-full" />
+                              <ImageWithPlaceholder 
+                                src={url} 
+                                alt={`t-${i}`} 
+                                className="w-full h-full" 
+                                quality={20}
+                                sizes="100px"
+                              />
                            </button>
                         ))}
                      </div>
@@ -1030,7 +1068,10 @@ export default function DiecastDashboard() {
                        src={expandedItem.imageUrls[activeImageIndex]} 
                        alt={expandedItem.title}
                        className="w-full h-full"
-                       innerClassName="w-full h-full object-contain" // Better for car shapes
+                       innerClassName="w-full h-full object-contain"
+                       quality={smartResolution ? 95 : 85}
+                       sizes="60vw"
+                       blurDataURL={smartResolution ? expandedItem.imageUrls[activeImageIndex] : undefined}
                      />
                      
                      {/* Glassy Overlays (Desktop) */}
@@ -1057,7 +1098,13 @@ export default function DiecastDashboard() {
                                     onClick={() => setActiveImageIndex(i)}
                                     className={`w-14 h-14 rounded-2xl overflow-hidden border-2 transition-all flex-shrink-0 ${activeImageIndex === i ? 'border-orange-600 scale-110' : 'border-transparent opacity-40 hover:opacity-100 hover:scale-105'}`}
                                  >
-                                    <ImageWithPlaceholder src={url} alt={`th-${i}`} className="w-full h-full" />
+                                    <ImageWithPlaceholder 
+                                      src={url} 
+                                      alt={`th-${i}`} 
+                                      className="w-full h-full" 
+                                      quality={20}
+                                      sizes="100px"
+                                    />
                                  </button>
                               ))}
                            </div>
@@ -1155,6 +1202,15 @@ export default function DiecastDashboard() {
 
 
           <div className="flex items-center gap-2 md:gap-4">
+              <button 
+                onClick={() => setSmartResolution(!smartResolution)}
+                className={`hidden md:flex items-center justify-center gap-2.5 h-11 md:h-12 px-4 rounded-2xl border transition-all font-black shadow-xl group ${smartResolution ? 'bg-orange-600/10 border-orange-600/30 text-orange-500' : 'bg-zinc-900 border-zinc-800 text-zinc-500'}`}
+                title={smartResolution ? "Smart Resolution: ON (Saving Bandwidth)" : "Smart Resolution: OFF (High Quality)"}
+              >
+                <div className={`w-2 h-2 rounded-full ${smartResolution ? 'bg-orange-500 animate-pulse' : 'bg-zinc-700'}`} />
+                <span className="text-[9px] uppercase tracking-[0.2em] mt-0.5">{smartResolution ? "SMART RES" : "HD MODE"}</span>
+              </button>
+
               {/* Registry Access (Thematic Icon) */}
               <button 
                 onClick={() => setViewState('profile')}
@@ -1441,6 +1497,8 @@ export default function DiecastDashboard() {
                           src={item.imageUrls[0]} 
                           alt={item.title} 
                           className="w-full h-full"
+                          quality={smartResolution ? 20 : 80}
+                          sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-transparent to-transparent opacity-60"></div>
                         
