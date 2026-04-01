@@ -31,8 +31,8 @@ export async function GET() {
       );
     `;
 
-    // 2. Fetch the production collection
-    const { rows } = await sql`SELECT * FROM cars ORDER BY date_added DESC`;
+    // 2. Fetch the production collection (Limited to 50 for scalable pagination readiness)
+    const { rows } = await sql`SELECT * FROM cars ORDER BY date_added DESC LIMIT 50`;
     
     // Fetch unique brands
     const brandResult = await sql`SELECT brand_name FROM registry_models_list ORDER BY brand_name ASC`;

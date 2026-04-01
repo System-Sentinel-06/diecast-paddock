@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useMemo, useEffect } from 'react';
+import Image from 'next/image';
 import { addCarToPaddock, addBrandToRegistry, removeBrandFromRegistry, deleteCarFromPaddock } from '@/app/actions';
 
 // ==========================================
@@ -105,12 +106,9 @@ const SearchIcon = () => (
   </svg>
 );
 
-const ImageWithPlaceholder = ({ src, alt, className = "", innerClassName = "", priority = false }: { src: string; alt: string; className?: string; innerClassName?: string; priority?: boolean }) => {
+const ImageWithPlaceholder = ({ src, alt, className = "", innerClassName = "", priority = false, sizes = "(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" }: { src: string; alt: string; className?: string; innerClassName?: string; priority?: boolean; sizes?: string }) => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [error, setError] = useState(false);
-
-  // Optimized Skeleton Blur Data URL (Static)
-  const blurUrl = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiBmaWxsPSIjMTgxODE4Ii8+PC9zdmc+";
 
   return (
     <div className={`relative overflow-hidden ${className} bg-zinc-900/50`}>
@@ -120,13 +118,15 @@ const ImageWithPlaceholder = ({ src, alt, className = "", innerClassName = "", p
         </div>
       )}
       
-      <img
+      <Image
         src={error ? "https://images.unsplash.com/photo-1542273917363-3b1817f69a2d?q=80&w=800&auto=format&fit=crop" : src}
         alt={alt}
-        loading={priority ? 'eager' : 'lazy'}
+        fill
+        sizes={sizes}
+        priority={priority}
         onLoad={() => setIsLoaded(true)}
         onError={() => setError(true)}
-        className={`${innerClassName} transition-all duration-700 ease-out ${isLoaded ? 'opacity-100 scale-100 placeholder-blur' : 'opacity-0 scale-110'}`}
+        className={`${innerClassName} transition-all duration-700 ease-out ${isLoaded ? 'opacity-100 scale-100' : 'opacity-0 scale-110'}`}
         style={{ filter: isLoaded ? 'none' : 'blur(20px)' }}
       />
     </div>
@@ -307,7 +307,7 @@ const compressImage = async (file: File): Promise<Blob> => {
     const reader = new FileReader();
     reader.readAsDataURL(file);
     reader.onload = (event) => {
-      const img = new Image();
+      const img = new window.Image();
       img.src = event.target?.result as string;
       img.onload = () => {
         const canvas = document.createElement('canvas');

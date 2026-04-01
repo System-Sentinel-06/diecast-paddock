@@ -3,6 +3,7 @@
 import { sql } from '@vercel/postgres';
 import { put } from '@vercel/blob';
 import { revalidatePath } from 'next/cache';
+import sharp from 'sharp';
 
 export async function addCarToPaddock(formData: FormData) {
   try {
@@ -40,14 +41,27 @@ export async function addCarToPaddock(formData: FormData) {
     }
 
 
-    // 2. Vercel Blob Upload
-    console.log('Starting Upload to Vercel Blob...');
-    const blob = await put(imageFile.name, imageFile, {
+    // 2. Server-Side Compression Phase (sharp)
+    console.log('Initiating Asset Compression via Sharp...');
+    const arrayBuffer = await imageFile.arrayBuffer();
+    const rawBuffer = Buffer.from(arrayBuffer);
+
+    // Dynamic encode pipeline to prevent extreme storage billings
+    const webpBuffer = await sharp(rawBuffer)
+      .resize({ width: 1200, withoutEnlargement: true })
+      .webp({ quality: 80 })
+      .toBuffer();
+
+    console.log('Compression complete. Starting Upload to Vercel Blob...');
+    
+    // Purge the original extension, enforce .webp
+    const optimizedFileName = imageFile.name.replace(/\.[^/.]+$/, "") + ".webp";
+
+    const blob = await put(optimizedFileName, webpBuffer, {
       access: 'public',
       addRandomSuffix: true,
+      contentType: 'image/webp'
     });
-    console.log(`Blob URL Received: ${blob.url}`);
-    console.log('New Blob URL:', blob.url);
 
 
     // 3. Environment & Connection Resilience
