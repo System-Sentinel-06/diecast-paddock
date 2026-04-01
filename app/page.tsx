@@ -743,11 +743,11 @@ export default function DiecastDashboard() {
           
           {/* Left Text Block */}
           <div className="flex flex-col items-center text-center max-w-xl flex-shrink-0 z-20">
-             <h1 className="text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-br from-white via-zinc-200 to-zinc-600 mb-4 sm:mb-6 drop-shadow-2xl">
+             <h1 className="text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-mono font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-br from-white via-zinc-200 to-zinc-600 mb-4 sm:mb-6 drop-shadow-2xl">
                Diecast<br/><span className="text-orange-600">Paddock</span>
              </h1>
 
-             <p className="text-zinc-500 font-sans text-sm sm:text-lg md:text-xl leading-relaxed mb-10 max-w-lg font-medium drop-shadow-md mx-auto">
+             <p className="text-white/90 font-sans text-sm sm:text-lg md:text-xl leading-relaxed mb-10 max-w-lg font-medium drop-shadow-md mx-auto">
                 A definitive digital catalogue to maintain your precision scaled garage. Built for genuine diecast passion.
              </p>
 
