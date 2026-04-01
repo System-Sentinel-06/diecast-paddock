@@ -159,8 +159,8 @@ const initialMockCollection: DiecastModel[] = [];
 // ==========================================
 // LOADING ANIMATION
 // ==========================================
-const LoadingScreen = () => (
-   <div className="fixed inset-0 z-[999] bg-[#060202] flex flex-col items-center justify-center animate-in fade-in duration-700">
+const LoadingScreen = ({ message = "Warming Engines" }: { message?: string }) => (
+   <div className="fixed inset-0 z-[9999] bg-[#060202]/95 backdrop-blur-xl flex flex-col items-center justify-center animate-in fade-in duration-300">
       <div className="relative">
          {/* Internal Glow Pulse */}
          <div className="absolute inset-0 bg-red-600/20 blur-[80px] rounded-full animate-pulse"></div>
@@ -172,8 +172,8 @@ const LoadingScreen = () => (
       </div>
 
       <div className="flex flex-col items-center gap-4">
-         <span className="text-[10px] font-black text-white/50 tracking-[0.5em] uppercase animate-pulse">
-            Warming Engines
+         <span className="text-[10px] font-black text-white/50 tracking-[0.5em] uppercase animate-pulse text-center px-4">
+            {message}
          </span>
          
          {/* Racing Progress Bar */}
@@ -365,6 +365,7 @@ export default function DiecastDashboard() {
   // App State Models
   const [collection, setCollection] = useState<DiecastModel[]>(initialMockCollection);
   const [isDataLoaded, setIsDataLoaded] = useState(false);
+  const [processOverlayMessage, setProcessOverlayMessage] = useState<string | null>(null);
   
   // App State Categories
   const [categories, setCategories] = useState<string[]>([]);
@@ -546,6 +547,7 @@ export default function DiecastDashboard() {
      }
      
      setIsUploading(true);
+     setProcessOverlayMessage('Committing to Postgres Vault...');
      setNotification("Optimizing Image Asset...");
      
      try {
@@ -584,7 +586,7 @@ export default function DiecastDashboard() {
        console.error("Server Action Sync Error:", err);
        alert(`Cloud Sync Interrupted: ${err.message || 'Check connection'}`); 
      } finally { 
-       setIsUploading(false); 
+       setIsUploading(false); setProcessOverlayMessage(null); 
      }
   };
 
@@ -593,15 +595,14 @@ export default function DiecastDashboard() {
     // 1. Snapshot for Rollback
     const previousCollection = [...collection];
     
-    // 2. Optimistic Update (Immediate Feedback)
-    setCollection(prev => prev.filter(item => item.id !== id));
     setExpandedItem(null);
-    setNotification('Purging Record...');
+    setProcessOverlayMessage('Purging Registry Record...');
 
     try {
       const result = await deleteCarFromPaddock(id);
       if (result?.error) throw new Error(result.error);
       
+      setCollection(prev => prev.filter(item => item.id !== id));
       setNotification('Record Erased.');
       // Final verified sync from DB
       refreshCollection(); 
@@ -610,6 +611,8 @@ export default function DiecastDashboard() {
       console.error(e);
       setCollection(previousCollection);
       alert(`Vault Override Failed: ${e.message || 'Record Restored'}`);
+    } finally {
+      setProcessOverlayMessage(null);
     }
   };
 
@@ -619,7 +622,7 @@ export default function DiecastDashboard() {
      const clean = newCatName.trim();
      if (clean && !categories.includes(clean)) {
         setIsAddingBrand(true);
-        setNotification(`Registering Brand: ${clean}...`);
+        setProcessOverlayMessage(`Registering Brand: ${clean}...`);
         try {
            const res = await addBrandToRegistry(clean);
            if (res?.error) throw new Error(res.error);
@@ -631,6 +634,7 @@ export default function DiecastDashboard() {
            alert(e.message);
         } finally {
            setIsAddingBrand(false);
+           setProcessOverlayMessage(null);
         }
      }
   };
@@ -638,7 +642,7 @@ export default function DiecastDashboard() {
   const handleRemoveCategory = async (cat: string) => {
      if (!confirm(`Are you sure you want to purge ${cat} from the registry configuration?`)) return;
      setRemovingBrand(cat);
-     setNotification(`Purging Brand: ${cat}...`);
+     setProcessOverlayMessage(`Purging Brand: ${cat}...`);
      try {
         const res = await removeBrandFromRegistry(cat);
         if (res?.error) throw new Error(res.error);
@@ -649,6 +653,7 @@ export default function DiecastDashboard() {
         alert(e.message);
      } finally {
         setRemovingBrand(null);
+        setProcessOverlayMessage(null);
      }
   };
 
@@ -896,6 +901,7 @@ export default function DiecastDashboard() {
       
       {/* Universal Ambient Dark/Red Background for consistency across pages */}
       <AmbientBackground />
+      {processOverlayMessage && <LoadingScreen message={processOverlayMessage} />}
 
       {notification && (
         <div className="fixed top-24 left-1/2 -translate-x-1/2 z-[100] animate-in slide-in-from-top-10 duration-500">
@@ -1414,7 +1420,7 @@ export default function DiecastDashboard() {
                        </button>
                      </div>
                    )}
-                   <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-1.5 sm:gap-6 animate-in fade-in duration-500 mt-2">
+                   <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4 sm:gap-6 px-3 sm:px-0 animate-in fade-in duration-500 mt-2">
                      {processedCollection.length === 0 ? (
                        <div className="col-span-full py-24 flex flex-col items-center justify-center text-center bg-zinc-950/60 rounded-[40px] border border-zinc-800 backdrop-blur-md">
                          <div className="w-16 h-16 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-500 mb-5 shadow-inner">
