@@ -113,8 +113,8 @@ const ImageWithPlaceholder = ({
   innerClassName = "", 
   priority = false, 
   sizes = "(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw",
-  quality = 75,
-  blurDataURL = ""
+  quality = 85,
+  blurDataURL = "data:image/webp;base64,UklGRjAAAABXRUJQVlA4ICQAAACyAgCdASoIAAgAAkA4JaACdAEAAKcAAP7/AAD++7u7u7u7AAA="
 }: { 
   src: string; 
   alt: string; 
@@ -130,14 +130,18 @@ const ImageWithPlaceholder = ({
 
   // Reset loading state when source changes significantly
   useEffect(() => {
-    if (!blurDataURL) {
-      setIsLoaded(false);
+    if (blurDataURL === "data:image/webp;base64,UklGRjAAAABXRUJQVlA4ICQAAACyAgCdASoIAAgAAkA4JaACdAEAAKcAAP7/AAD++7u7u7u7AAA=") {
+       setIsLoaded(false);
     }
   }, [src]);
 
   return (
-    <div className={`relative overflow-hidden ${className} bg-zinc-900/50`}>
-      {(!isLoaded || error) && !blurDataURL && (
+    <div className={`relative overflow-hidden ${className} bg-zinc-900/50 group`}>
+      {/* Vignette Overlay: Punchy Professional Aesthetic */}
+      <div className="absolute inset-0 z-20 pointer-events-none bg-[radial-gradient(circle_at_center,transparent_40%,rgba(0,0,0,0.6)_100%)] mix-blend-multiply opacity-70 group-hover:opacity-90 transition-opacity"></div>
+      <div className="absolute inset-0 z-20 pointer-events-none shadow-[inset_0_0_100px_rgba(0,0,0,0.4)]"></div>
+      
+      {(!isLoaded || error) && (
         <div className="absolute inset-0 z-10 animate-pulse bg-zinc-900 flex items-center justify-center">
             <CarIcon />
         </div>
@@ -150,12 +154,15 @@ const ImageWithPlaceholder = ({
         sizes={sizes}
         priority={priority}
         quality={quality}
-        placeholder={blurDataURL ? "blur" : undefined}
-        blurDataURL={blurDataURL || undefined}
+        placeholder="blur"
+        blurDataURL={blurDataURL}
         onLoad={() => setIsLoaded(true)}
         onError={() => setError(true)}
-        className={`${innerClassName} transition-all duration-700 ease-out ${isLoaded ? 'opacity-100 scale-100' : 'opacity-0 scale-110'}`}
-        style={{ filter: isLoaded ? 'none' : 'blur(20px)' }}
+        className={`${innerClassName} transition-all duration-700 ease-out ${isLoaded ? 'opacity-100 scale-100' : 'opacity-0 scale-110'} contrast-[1.1] saturate-[1.1]`}
+        style={{ 
+          filter: isLoaded ? 'contrast(1.1) saturate(1.1)' : 'blur(20px)',
+          imageRendering: 'high-quality' as any
+        }}
       />
     </div>
   );
@@ -1497,8 +1504,8 @@ export default function DiecastDashboard() {
                           src={item.imageUrls[0]} 
                           alt={item.title} 
                           className="w-full h-full"
-                          quality={smartResolution ? 20 : 80}
-                          sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
+                          quality={smartResolution ? 20 : 85}
+                          sizes="800px"
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-transparent to-transparent opacity-60"></div>
                         
