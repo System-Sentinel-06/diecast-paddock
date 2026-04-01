@@ -36,7 +36,23 @@ export async function GET() {
     
     // Fetch unique brands
     const brandResult = await sql`SELECT brand_name FROM registry_models_list ORDER BY brand_name ASC`;
-    const categories = brandResult.rows.map(r => r.brand_name);
+    let categories = brandResult.rows.map(r => r.brand_name);
+
+    // One-Time Secure Seeding Migration: Injects the foundation brands ONCE so they are globally editable and erasable.
+    await sql`CREATE TABLE IF NOT EXISTS sys_registry_migrations (name TEXT PRIMARY KEY)`;
+    const seeded = await sql`SELECT 1 FROM sys_registry_migrations WHERE name = 'seed-base-brands'`;
+    if (seeded.rowCount === 0) {
+       console.log("Triggering Application Migration: Seeding 39 Foundation Brands into SQL...");
+       const initialBrands = [ "Autoart", "AutoWorld", "Bburago", "BM Creations", "Era Car", "GreenLight", "GT Spirit", "Hobby Japan", "Hot Wheels - Mainline", "Hot Wheels - Premium", "Hot Wheels - RLC", "Hot Wheels - Team Transport", "Ignition Model", "Inno64", "Johnny Lightning", "Kaido House", "Kyosho", "LCD Models", "Maisto", "Majorette", "Mark43", "Matchbox - Basic", "Matchbox - Collectors", "Matchbox - Moving Parts", "Mini GT", "Motorhelix", "Norev", "Ottomobile", "Para64", "Peako64", "Pop Race", "Schuco", "Solido", "Sparky", "Tarmac Works", "Tomica - Basic", "Tomica - Limited Vintage", "Tomica - Premium", "X-Cartoys" ];
+       for (const b of initialBrands) {
+          await sql`INSERT INTO registry_models_list (brand_name) VALUES (${b}) ON CONFLICT DO NOTHING`;
+       }
+       await sql`INSERT INTO sys_registry_migrations (name) VALUES ('seed-base-brands')`;
+       
+       // Force a direct recount from Postgres immediately post-migration.
+       const freshBrandResult = await sql`SELECT brand_name FROM registry_models_list ORDER BY brand_name ASC`;
+       categories = freshBrandResult.rows.map(r => r.brand_name);
+    }
 
     // Map database columns to the UI data model perfectly
     const collection = rows.map(r => ({

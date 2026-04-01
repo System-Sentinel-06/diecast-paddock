@@ -140,47 +140,6 @@ const ImageWithPlaceholder = ({ src, alt, className = "", innerClassName = "", p
 // ==========================================
 // DATA & TYPES
 // ==========================================
-const INITIAL_CATEGORIES = [
-  "Autoart",
-  "AutoWorld",
-  "Bburago",
-  "BM Creations",
-  "Era Car",
-  "GreenLight",
-  "GT Spirit",
-  "Hobby Japan",
-  "Hot Wheels - Mainline",
-  "Hot Wheels - Premium",
-  "Hot Wheels - RLC",
-  "Hot Wheels - Team Transport",
-  "Ignition Model",
-  "Inno64",
-  "Johnny Lightning",
-  "Kaido House",
-  "Kyosho",
-  "LCD Models",
-  "Maisto",
-  "Majorette",
-  "Mark43",
-  "Matchbox - Basic",
-  "Matchbox - Collectors",
-  "Matchbox - Moving Parts",
-  "Mini GT",
-  "Motorhelix",
-  "Norev",
-  "Ottomobile",
-  "Para64",
-  "Peako64",
-  "Pop Race",
-  "Schuco",
-  "Solido",
-  "Sparky",
-  "Tarmac Works",
-  "Tomica - Basic",
-  "Tomica - Limited Vintage",
-  "Tomica - Premium",
-  "X-Cartoys"
-];
 
 
 type DiecastModel = {
@@ -408,7 +367,7 @@ export default function DiecastDashboard() {
   const [isDataLoaded, setIsDataLoaded] = useState(false);
   
   // App State Categories
-  const [categories, setCategories] = useState<string[]>(INITIAL_CATEGORIES);
+  const [categories, setCategories] = useState<string[]>([]);
   const [newCatName, setNewCatName] = useState('');
 
 
@@ -536,10 +495,8 @@ export default function DiecastDashboard() {
           setCollection(data.collection);
         }
         
-        // Merge Logic: Combine cloud categories with the new expanded INITIAL_CATEGORIES
         if (data.categories && Array.isArray(data.categories)) {
-          const combined = Array.from(new Set([...data.categories, ...INITIAL_CATEGORIES])).sort();
-          setCategories(combined);
+          setCategories(data.categories.sort());
         }
       } catch (e) {
         console.error("Persistence Hydration Failed:", e);
